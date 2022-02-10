@@ -49,7 +49,7 @@ const exercisesData = {
           exerciseNumber: 5
         },
         {
-          id: 1,
+          id: 2,
           exerciseNumber: 6
         },
       ]

@@ -1,8 +1,10 @@
+import { SetStateType } from '../types';
+
 type QAButtonProps = {
   children: React.ReactNode;
   color: 'bg-slate-700' | 'bg-green-600';
   mxAuto: 'ml-auto' | 'mr-auto';
-  onClick?: () => void;
+  onClick: () => void | SetStateType<boolean>;
 };
 
 const QAButton = ({ children, color, mxAuto, onClick }: QAButtonProps) => {
@@ -11,7 +13,9 @@ const QAButton = ({ children, color, mxAuto, onClick }: QAButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`${mxAuto} ${color} ${hoverColor} text-[1.1rem] text-white rounded-full px-6 py-2 capitalize font-[550] whitespace-nowrap flex items-center`}
+      className={`${mxAuto} ${color} ${hoverColor} ${
+        color === 'bg-green-600' ? 'mb-40' : ''
+      } text-[1.1rem] text-white rounded-full px-6 py-2 capitalize font-[550] whitespace-nowrap flex items-center`}
     >
       {children}
     </button>

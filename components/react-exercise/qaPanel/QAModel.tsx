@@ -1,33 +1,35 @@
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import { useContext, useState } from 'react';
-import useToggle from '../../../hooks/useToggle';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import QAButton from './QAButton';
+import { SetStateType } from '../types';
 
-type QAModelProps = {
-  ques: string;
-  ans: string;
-};
+interface QAModelProps {
+  isUserTrying: boolean;
+  isAnswerCorrect: boolean;
+  canShowAns: boolean;
+  quesText: string;
+  children: React.ReactNode;
+  handleAnsSubmittion: () => void;
+  handleCanShowAns: SetStateType<boolean>;
+  setIsUserTrying: SetStateType<boolean>;
+}
 
-const QAModel = ({ ques, ans }: QAModelProps) => {
+const QAModel = ({
+  quesText,
+  canShowAns,
+  isUserTrying,
+  isAnswerCorrect,
+  children,
+  handleAnsSubmittion,
+  handleCanShowAns,
+  setIsUserTrying,
+}: QAModelProps) => {
   const reactExCtx = useContext(ReactExerciseCtx);
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(true);
-  const [isUserTrying, setIsUserTrying] = useState(true);
-  const [userInput, setUserInput] = useState<string>('');
-  const [canShowAns, handleCanShowAns] = useToggle(false);
-
-  const handleAnsSubmittion = () => {
-    setIsUserTrying(false);
-    if (userInput === ans) {
-      setIsAnswerCorrect(true);
-    } else {
-      setIsAnswerCorrect(false);
-    }
-  };
 
   return (
     <div>
-      <p className='text-black text-lg font-medium mb-4'>{ques}</p>
+      <pre className='text-black text-base font-medium mb-4'>{quesText}</pre>
       <div
         className={`${
           !isUserTrying && (isAnswerCorrect ? 'bg-green-100' : 'bg-red-200')
@@ -50,21 +52,7 @@ const QAModel = ({ ques, ans }: QAModelProps) => {
           </div>
         ) : (
           <>
-            {/* --------------question------------------------------------------------------------------------------------------ */}
-            <p className='p-2 text-black text-lg tracking-wide mb-10'>
-              ReactDOM.
-              <input
-                value={canShowAns ? ans : userInput}
-                type='text'
-                maxLength={ans.length}
-                className={
-                  canShowAns ? 'text-rose-700 font-medium' : 'text-black'
-                }
-                onChange={(e) => setUserInput(e.target.value)}
-              />
-              {`(myElement, document.getElementById('root'))`};
-            </p>
-            {/* --------------question------------------------------------------------------------------------------------------ */}
+            {children}
             {/* 'show answer Button */}
             <QAButton
               color='bg-slate-700'

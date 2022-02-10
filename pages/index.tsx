@@ -1,15 +1,30 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Home: NextPage = () => {
   return (
-    <div className='min-h-screen flex flex-col'>
-      <h1 className='capitalize bg-neutral-800 px-4 py-4 text-white font-semibold text-2xl grow-0'>
+    <div className='min-h-screen flex flex-col overflow-auto mb-20'>
+      <h1 className='capitalize bg-neutral-800 px-6 py-6 text-white font-semibold text-2xl grow-0'>
         Welcome to react quiz app
       </h1>
-      <div className='grow flex justify-center items-center'>
+      <div className='grow flex-col justify-center items-start pt-28 relative'>
+        {/* <div className='w-fit right-0 -z-50'>
+          <Image
+            src='/images/cylinder-react.png'
+            alt='js cup iamge'
+            layout='fill'
+          />
+        </div> */}
+        <h1 className='capitalize relative leading-[1.3] mx-auto max-w-[20ch] text-5xl text-center font-bold text-gray-800 mb-4'>
+          test your react skills with react quiz
+        </h1>
+        <p className='text-center max-w-[38ch] text-gray-600 mx-auto mb-20'>
+          Attempt all questions and get points for each correct answer. Get
+          yourself a chance to share your high scores on LinkedIn.
+        </p>
         <Link href='/react-exercise'>
-          <a className='shadow-2xl bg-green-500 text-2xl py-4 px-9 hover:scale-95 hover:bg-green-600 transition-transform'>
+          <a className='relative shadow-2xl block w-fit mx-auto bg-green-500 text-2xl text-gray-800 py-4 px-9 hover:scale-95 hover:bg-green-600 transition-transform'>
             Start Quiz
           </a>
         </Link>

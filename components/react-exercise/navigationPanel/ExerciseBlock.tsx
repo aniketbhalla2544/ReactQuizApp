@@ -26,13 +26,24 @@ const ExerciseBlock = ({ exerciseData }: ExerciseBlockProps) => {
       </div>
       <ul>
         {reactExerciseContext?.currentExerciseBlock === exerciseBlockId &&
-          exerciseData.exercises.map((blockExercise) => {
+          exerciseData.exercises.map((blockExercise, index) => {
             return (
               <li
                 key={blockExercise.id}
-                className='bg-white text-sm px-7 py-3 hover:bg-slate-200 cursor-pointer'
+                onClick={() =>
+                  reactExerciseContext.setCurrentExerciseNumber(
+                    blockExercise.exerciseNumber
+                  )
+                }
+                className={`${
+                  reactExerciseContext.currentExerciseNumber ===
+                  blockExercise.exerciseNumber
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white hover:bg-slate-200'
+                }  text-sm px-7 py-3  cursor-pointer tracking-wider`}
               >
-                Exercise {blockExercise.exerciseNumber}
+                {/* Exercise {index + 1} ({blockExercise.exerciseNumber}) */}
+                Exercise {index + 1}
               </li>
             );
           })}

@@ -28,9 +28,9 @@ const ReactExercise = () => {
   //   console.log('currentExerciseBlock', currentExerciseBlock);
   // }, [currentExerciseNumber, currentExerciseBlock]);
 
-  useEffect(() => {
-    console.log('isNavPanelOpen', isNavPanelOpen);
-  }, [isNavPanelOpen]);
+  // useEffect(() => {
+  //   console.log('isNavPanelOpen', isNavPanelOpen);
+  // }, [isNavPanelOpen]);
 
   return (
     <div className='flex'>
