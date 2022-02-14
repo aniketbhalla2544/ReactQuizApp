@@ -17,7 +17,7 @@ const Home: NextPage = () => {
           />
         </div> */}
         <h1 className='capitalize relative leading-[1.3] mx-auto max-w-[20ch] text-5xl text-center font-bold text-gray-800 mb-4'>
-          test your react skills with react quiz
+          test your basic react skills with react quiz
         </h1>
         <p className='text-center max-w-[38ch] text-gray-600 mx-auto mb-20'>
           Attempt all questions and get points for each correct answer. Get

@@ -1,24 +1,23 @@
-import { createContext, useState } from 'react';
-import exercisesData from '../data/exercises';
-import { ExercisesData, SetStateType } from '../types';
+import { useContext, useState } from 'react';
+import { ReactExerciseCtx } from '../../../pages/react-exercise';
+import { ExercisesData } from '../types';
 import ExerciseBlocks from './ExerciseBlocks';
 import Icons from './Icons';
 
-const NavigationPanel = () => {
-  const [exercises] = useState<ExercisesData>(exercisesData);
-  const [completedExercises, setCompletedExercises] = useState<number>(0);
-  const totalExercises = exercises.meta.totalExercises;
+interface NavPanelProps {
+  exercises: ExercisesData;
+}
 
-  const handleCompletedExercises = () => {
-    setCompletedExercises(0);
-  };
+const NavigationPanel = ({ exercises }: NavPanelProps) => {
+  const reactCtx = useContext(ReactExerciseCtx);
 
   return (
     <div className='shadow-2xl bg-neutral-800 min-h-screen'>
-      <Icons handleCompletedExercises={handleCompletedExercises} />
-      <div className='px-5 py-4 bg-neutral-200 text-sm'>
-        <p>
-          Completed {completedExercises} of {totalExercises} Exercises:{' '}
+      <Icons />
+      <div className='px-5 py-4 bg-neutral-200'>
+        <p className='text-center'>
+          Completed {reactCtx?.completedExercises.length} of {reactCtx?.totalExercises}{' '}
+          Exercises:{' '}
         </p>
       </div>
 

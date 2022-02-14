@@ -74,11 +74,15 @@ const QAModel = ({
               handleAnsSubmittion();
             } else {
               if (isAnswerCorrect) {
-                reactExCtx?.setCurrentExerciseBlock(
-                  (currentExerciseBlock) => currentExerciseBlock + 1
+                reactExCtx?.setCurrentExerciseBlock((currentExerciseBlock) =>
+                  reactExCtx.canGoToNextExerciseBlock
+                    ? currentExerciseBlock + 1
+                    : currentExerciseBlock
                 );
-                reactExCtx?.setCurrentExerciseNumber(
-                  (currentExerciseNumber) => currentExerciseNumber + 1
+                reactExCtx?.setCurrentExerciseNumber((currentExerciseNumber) =>
+                  reactExCtx.canGoToNextExercise
+                    ? currentExerciseNumber + 1
+                    : currentExerciseNumber
                 );
               } else {
                 setIsUserTrying(true);
@@ -88,7 +92,12 @@ const QAModel = ({
         >
           {!isUserTrying &&
             (isAnswerCorrect ? (
-              <span>next exercise &nbsp;</span>
+              reactExCtx?.currentExerciseNumber ===
+              reactExCtx?.totalExercises ? (
+                <span>exercises finished</span>
+              ) : (
+                <span>next exercise &nbsp;</span>
+              )
             ) : (
               <span>try again &nbsp;</span>
             ))}

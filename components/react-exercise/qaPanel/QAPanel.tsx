@@ -30,7 +30,7 @@ const QAPanel = () => {
     setInputAnswers(() => {
       return {
         ...inputAnswers,
-        [name]: value.trim().toLocaleLowerCase(),
+        [name]: value.trim(),
       };
     });
   };
@@ -39,6 +39,16 @@ const QAPanel = () => {
     setIsUserTrying(false);
     if (JSON.stringify(inputAnswers) === JSON.stringify(answers)) {
       setIsAnswerCorrect(true);
+      if (
+        !reactExercCtx?.completedExercises.includes(
+          reactExercCtx.currentExerciseNumber
+        )
+      ) {
+        reactExercCtx?.setCompletedExercises((completedExercises) => [
+          ...completedExercises,
+          reactExercCtx.currentExerciseNumber,
+        ]);
+      }
     } else {
       setIsAnswerCorrect(false);
     }
@@ -203,7 +213,7 @@ const message = 'I live in ' + state + '.';
         </code>
       ),
       answers: {
-        answerOne: 'address:{}',
+        answerOne: 'address:{state}',
       },
     },
     {
@@ -833,7 +843,7 @@ component and the style sheet are in the same directory.`,
         </code>
       ),
       answers: {
-        answerOne: '"./App.css"',
+        answerOne: "'./App.css'",
       },
     },
     {
@@ -875,13 +885,13 @@ component and the style sheet are in the same directory.`,
   // console.log(memoizedCurrentQAModelData);
 
   useEffect(() => {
-    console.log('inputAnswers below');
-    console.log(inputAnswers);
+    // console.log('inputAnswers below');
+    // console.log(inputAnswers);
   }, [inputAnswers]);
 
   useEffect(() => {
-    console.log('answers below');
-    console.log(answers);
+    // console.log('answers below');
+    // console.log(answers);
   }, [answers]);
 
   useEffect(() => {
@@ -902,8 +912,11 @@ component and the style sheet are in the same directory.`,
           </div>
         )}
         <section className='pt-20'>
+          <p className='text-green-500 text-lg font-bold'>
+            {reactExercCtx?.completedExercises.toString() ||
+              'Completed exercises list is empty'}
+          </p>
           <h1 className='mb-6 capitalize text-4xl font-medium'>exercise:</h1>
-          {/* // ques 1 */}
           <QAModel
             quesText={memoizedCurrentQAModelData?.quesText ?? 'no ques found!'}
             canShowAns={canShowAns}

@@ -7,11 +7,7 @@ import { SetStateType } from '../types';
 const iconStyle = 'w-6 h-auto text-slate-700';
 const cursorIconStyle = `${iconStyle} cursor-pointer`;
 
-type IconsProps = {
-  handleCompletedExercises: () => void;
-};
-
-const Icons = ({ handleCompletedExercises }: IconsProps) => {
+const Icons = () => {
   const reactExercCtx = useContext(ReactExerciseCtx);
 
   return (
@@ -23,7 +19,7 @@ const Icons = ({ handleCompletedExercises }: IconsProps) => {
       </Link>
       <TrashIcon
         className={cursorIconStyle}
-        onClick={handleCompletedExercises}
+        onClick={() => reactExercCtx?.setCompletedExercises([])}
       />
       <XIcon
         className={cursorIconStyle}
