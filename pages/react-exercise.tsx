@@ -19,14 +19,13 @@ type ReactExerciseContextInterface = {
   toggleIsNavPanelOpen: () => void;
   totalExerciseBlocks: number;
   totalExercises: number;
-  canGoToNextExerciseBlock: boolean;
-  canGoToNextExercise: boolean;
   completedExercises: number[];
   setCompletedExercises: SetStateType<number[]>;
 };
 
-export const ReactExerciseCtx =
-  createContext<ReactExerciseContextInterface | null>(null);
+export const ReactExerciseCtx = createContext<ReactExerciseContextInterface>(
+  null!
+);
 
 const ReactExercisePage = () => {
   const [exercises] = useState<ExercisesData>(exercisesData);
@@ -36,10 +35,6 @@ const ReactExercisePage = () => {
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
   const totalExerciseBlocks: number = exercises.data.length;
   const totalExercises: number = exercises.meta.totalExercises;
-  const canGoToNextExerciseBlock: boolean =
-    totalExerciseBlocks === currentExerciseBlock ? false : true;
-  const canGoToNextExercise: boolean =
-    totalExercises === currentExerciseNumber ? false : true;
 
   return (
     <div className='flex'>
@@ -53,8 +48,6 @@ const ReactExercisePage = () => {
           toggleIsNavPanelOpen,
           totalExerciseBlocks,
           totalExercises,
-          canGoToNextExerciseBlock,
-          canGoToNextExercise,
           completedExercises,
           setCompletedExercises,
         }}
@@ -64,7 +57,7 @@ const ReactExercisePage = () => {
             <NavigationPanel exercises={exercises}></NavigationPanel>
           </ErrorBoundary>
         )}
-        <QAPanel></QAPanel>
+        <QAPanel />
       </ReactExerciseCtx.Provider>
     </div>
   );

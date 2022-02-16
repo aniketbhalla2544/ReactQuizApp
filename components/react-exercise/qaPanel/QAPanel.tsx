@@ -2,7 +2,9 @@ import { MenuIcon } from '@heroicons/react/solid';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import useToggle from '../../../hooks/useToggle';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
-import QAModel from './QAModel';
+import QAModel from './QAModal';
+import { FaFacebookSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
+import Modal from '../../reusable-components/Modal';
 
 type Answers = {
   [key: string]: string;
@@ -18,12 +20,25 @@ interface QAModelInterface {
 type QAModelsType = QAModelInterface[];
 
 const QAPanel = () => {
-  const reactExercCtx = useContext(ReactExerciseCtx);
+  const {
+    totalExercises,
+    completedExercises,
+    setCompletedExercises,
+    currentExerciseNumber,
+    currentExerciseBlock,
+    isNavPanelOpen,
+    toggleIsNavPanelOpen,
+  } = useContext(ReactExerciseCtx);
+
   const [answers, setAnswers] = useState<Answers>({});
   const [inputAnswers, setInputAnswers] = useState<typeof answers>({});
   const [canShowAns, handleCanShowAns] = useToggle(false);
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(true);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [isUserTrying, setIsUserTrying] = useState(true);
+  const [isResultsModalOpen, toggleIsResultsModalOpen] = useToggle(false);
+  
+  const hasUserCompletedAllExercises =
+    completedExercises.length === totalExercises;
 
   const handleInputTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,18 +50,24 @@ const QAPanel = () => {
     });
   };
 
+  useEffect(() => {
+    if (isAnswerCorrect && hasUserCompletedAllExercises) {
+      toggleIsResultsModalOpen();
+    }
+  }, [isAnswerCorrect, hasUserCompletedAllExercises]);
+
+  // useEffect(() => {
+  //   console.log('isResultsModalOpen: ', isResultsModalOpen);
+  // }, [isResultsModalOpen]);
+
   const handleAnsSubmittion = () => {
     setIsUserTrying(false);
     if (JSON.stringify(inputAnswers) === JSON.stringify(answers)) {
       setIsAnswerCorrect(true);
-      if (
-        !reactExercCtx?.completedExercises.includes(
-          reactExercCtx.currentExerciseNumber
-        )
-      ) {
-        reactExercCtx?.setCompletedExercises((completedExercises) => [
+      if (!completedExercises.includes(currentExerciseNumber)) {
+        setCompletedExercises((completedExercises) => [
           ...completedExercises,
-          reactExercCtx.currentExerciseNumber,
+          currentExerciseNumber,
         ]);
       }
     } else {
@@ -194,7 +215,7 @@ address: {
 
 displayMessage(person)
 
-function displayMessage({`}
+function displayMessage({ `}
             <input
               value={
                 canShowAns ? answers.answerOne : inputAnswers.answerOne ?? ''
@@ -207,7 +228,7 @@ function displayMessage({`}
               }
             />
             {` }) {
-const message = 'I live in ' + state + '.';
+    const message = 'I live in ' + state + '.';
 }`}
           </pre>
         </code>
@@ -429,7 +450,7 @@ ReactDOM.render(paragraph, document.getElementById('root'));`}
     },
     {
       exerciseNumber: 13,
-      quesText: 'Name the following React component "Person".',
+      quesText: 'Name the following React component "person".',
       ques: (
         <code className='block text-black text-lg mb-20'>
           <p className='mb-3'>
@@ -876,46 +897,49 @@ component and the style sheet are in the same directory.`,
 
   const memoizedCurrentQAModelData = useMemo(
     () =>
-      QAModels.find(
-        (model) => model.exerciseNumber === reactExercCtx?.currentExerciseNumber
-      ),
-    [reactExercCtx?.currentExerciseNumber, inputAnswers, canShowAns, answers]
+      QAModels.find((model) => model.exerciseNumber === currentExerciseNumber),
+    [currentExerciseNumber, inputAnswers, canShowAns, answers]
   ) as QAModelInterface;
-
-  // console.log(memoizedCurrentQAModelData);
-
-  useEffect(() => {
-    // console.log('inputAnswers below');
-    // console.log(inputAnswers);
-  }, [inputAnswers]);
-
-  useEffect(() => {
-    // console.log('answers below');
-    // console.log(answers);
-  }, [answers]);
 
   useEffect(() => {
     setAnswers(memoizedCurrentQAModelData.answers);
     setInputAnswers({});
     setIsUserTrying(true);
-  }, [reactExercCtx?.currentExerciseNumber]);
+    setIsAnswerCorrect(false);
+  }, [currentExerciseNumber]);
 
   return (
     <>
+      <Modal
+        isOpen={isResultsModalOpen}
+        isOpenToggler={toggleIsResultsModalOpen}
+      >
+        <h2 className='capitalize text-center text-3xl mb-10'>
+          congratulations🎉!
+        </h2>
+        <p className='text-xl text-center mb-6'>
+          You have completed all {totalExercises} React exercises.
+        </p>
+        <p className='text-center mb-6'>Share your score:</p>
+        <div className='flex justify-center items-center mb-20 gap-1'>
+          <FaFacebookSquare className='w-12 cursor-pointer h-auto text-[#33558e]' />
+          <FaTwitterSquare className='w-12 cursor-pointer h-auto text-[#1da1f2]' />
+          <FaLinkedin className='w-12 cursor-pointer h-auto text-[#2867b2]' />
+        </div>
+      </Modal>
       <div className='grow px-6 pt-4'>
-        {!reactExercCtx?.isNavPanelOpen && (
+        {!isNavPanelOpen && (
           <div
             className='flex-none w-8 cursor-pointer h-auto'
-            onClick={() => reactExercCtx?.toggleIsNavPanelOpen()}
+            onClick={() => toggleIsNavPanelOpen()}
           >
             <MenuIcon />
           </div>
         )}
+        {/* <p className='text-green-500 text-lg font-bold'>
+          {completedExercises.toString() || 'Completed exercises list is empty'}
+        </p> */}
         <section className='pt-20'>
-          <p className='text-green-500 text-lg font-bold'>
-            {reactExercCtx?.completedExercises.toString() ||
-              'Completed exercises list is empty'}
-          </p>
           <h1 className='mb-6 capitalize text-4xl font-medium'>exercise:</h1>
           <QAModel
             quesText={memoizedCurrentQAModelData?.quesText ?? 'no ques found!'}
@@ -925,6 +949,7 @@ component and the style sheet are in the same directory.`,
             setIsUserTrying={setIsUserTrying}
             handleCanShowAns={handleCanShowAns}
             handleAnsSubmittion={handleAnsSubmittion}
+            setIsAnswerCorrect={setIsAnswerCorrect}
           >
             {memoizedCurrentQAModelData?.ques}
           </QAModel>

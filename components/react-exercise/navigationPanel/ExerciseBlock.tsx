@@ -1,4 +1,4 @@
-import { CheckIcon } from '@heroicons/react/solid';
+import { CheckIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import { useContext } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import { ExercisesData } from '../types';
@@ -9,40 +9,46 @@ type ExerciseBlockProps = {
   exerciseData: Exercise;
 };
 
-const isVisible = true;
-
 const ExerciseBlock = ({
   exerciseData: { id, name, exercises },
 }: ExerciseBlockProps) => {
-  const reactExerciseContext = useContext(ReactExerciseCtx);
+  const {
+    completedExercises,
+    currentExerciseNumber,
+    setCurrentExerciseNumber,
+    currentExerciseBlock,
+    setCurrentExerciseBlock,
+  } = useContext(ReactExerciseCtx);
   const exerciseBlockId = id;
 
   const isBlockExerciseCompleted = (exerciseNumber: number): boolean => {
-    return (
-      reactExerciseContext?.completedExercises.includes(exerciseNumber) ?? false
-    );
+    return completedExercises.includes(exerciseNumber);
   };
   const onBlockExerciseClick = (exerciseNumber: number) => {
-    reactExerciseContext?.setCurrentExerciseNumber(exerciseNumber);
+    setCurrentExerciseNumber(exerciseNumber);
   };
   const areCurrentAndBlockExerciseNumberSame = (
     exerciseNumber: number
   ): boolean => {
-    return reactExerciseContext?.currentExerciseNumber === exerciseNumber;
+    return currentExerciseNumber === exerciseNumber;
   };
+  const areCurrentAndBlockNumberSame: boolean =
+    exerciseBlockId === currentExerciseBlock;
 
   return (
     <>
       <section
-        onClick={() =>
-          reactExerciseContext?.setCurrentExerciseBlock(exerciseBlockId)
-        }
-        className='capitalize text-slate-300 hover:text-white text-lg border-b-2 border-black px-7 py-3 cursor-pointer'
+        onClick={() => setCurrentExerciseBlock(exerciseBlockId)}
+        className='relative capitalize text-slate-300 hover:text-white text-lg border-b-2 border-black px-7 py-3 cursor-pointer'
       >
+        {areCurrentAndBlockNumberSame && (
+          <ChevronRightIcon className='absolute top-1/3 -translate-x-5 inline w-5' />
+        )}
+
         {name}
       </section>
       <ul>
-        {reactExerciseContext?.currentExerciseBlock === exerciseBlockId &&
+        {currentExerciseBlock === exerciseBlockId &&
           exercises.map((blockExercise, index) => {
             return (
               <li
