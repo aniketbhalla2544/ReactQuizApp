@@ -39,7 +39,7 @@ const QAPanel = ({ userName }: QAPanelProps) => {
   } = useContext(ReactExerciseCtx);
 
   useEffect(() => {
-    console.log("QAPanel rendering");
+    console.log('QAPanel rendering');
   });
 
   const [answers, setAnswers] = useState<Answers>({});
@@ -55,6 +55,7 @@ const QAPanel = ({ userName }: QAPanelProps) => {
   );
 
   // const svgSeed = `${Math.floor(Math.random() * 1000)}`;
+  console.log();
 
   useEffect(() => {
     console.log('svgSeed: ', svgSeed);
