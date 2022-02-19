@@ -78,9 +78,7 @@ const ExerciseBlock = ({
                     />
                   </span>
                 )}
-                <span>
-                  Exercise ({blockExercise.exerciseNumber}) {index + 1}
-                </span>
+                <span>Exercise {index + 1}</span>
               </li>
             );
           })}

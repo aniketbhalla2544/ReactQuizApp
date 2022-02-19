@@ -6,26 +6,48 @@ type PortalModalProps = {
   children: React.ReactNode;
   isOpenToggler: () => void;
   isOpen: boolean;
+  position: string;
+  width?: string;
+  isWithCloseButton?: boolean;
+  isWithCrossButton?: boolean;
 };
 
-const Modal = ({ children, isOpen, isOpenToggler }: PortalModalProps) => {
+const Modal = ({
+  children,
+  isOpen,
+  isOpenToggler,
+  width,
+  position,
+  isWithCloseButton,
+  isWithCrossButton,
+}: PortalModalProps) => {
   const [isBrowser, setIsBrowser] = useState<boolean>(false);
 
   useEffect(() => setIsBrowser(true), []);
 
   const ModalContent = () => (
-    <section className='w-1/2 inline-block absolute top-[15%] left-[30%] shadow-2xl border-4 bg-white px-6 pt-4 pb-12'>
-      <XIcon
-        className='w-10 p-3 hover:bg-gray-200 h-auto block ml-auto cursor-pointer'
-        onClick={isOpenToggler}
-      />
-      <section>{children}</section>
-      <button
-        onClick={isOpenToggler}
-        className='capitalize bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full px-12 py-2 mx-auto block text-base'
+    <section className='absolute top-0 left-0 h-[101.5%] w-full bg-black/40'>
+      <main
+        className={`${
+          width ? width : 'w-1/2'
+        } ${position} inline-block relative shadow-black/50 shadow-2xl bg-white px-6 pt-4 pb-12`}
       >
-        close
-      </button>
+        {isWithCrossButton && (
+          <XIcon
+            className='w-10 p-3 hover:bg-gray-200 h-auto block ml-auto cursor-pointer'
+            onClick={isOpenToggler}
+          />
+        )}
+        <section>{children}</section>
+        {isWithCloseButton && (
+          <button
+            onClick={isOpenToggler}
+            className='capitalize bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full px-12 py-2 mx-auto block text-base'
+          >
+            close
+          </button>
+        )}
+      </main>
     </section>
   );
 

@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from '@heroicons/react/solid';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useRef, useState } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import QAButton from './QAButton';
 import { SetStateType } from '../types';
@@ -35,6 +35,12 @@ const QAModel = ({
     totalExercises,
     completedExercises,
   } = useContext(ReactExerciseCtx);
+
+  // useEffect(() => {
+  //   console.log('-----------START-------------------');
+  //   console.log('QAModal rendering');
+  // });
+
   const [hide] = useToggle();
   const [isUserAlertModalOpen, toggleIsUserAlertModalOpen] = useToggle(false); // alert to complete all other exercises at first place
   const hasUserCompletedAllExercises =
@@ -142,4 +148,6 @@ const QAModel = ({
   );
 };
 
-export default QAModel;
+const MemoizedQAModal = memo(QAModel);
+
+export default MemoizedQAModal;

@@ -1,10 +1,15 @@
-import { MenuIcon } from '@heroicons/react/solid';
+import { ClockIcon, MenuIcon } from '@heroicons/react/solid';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import useToggle from '../../../hooks/useToggle';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import QAModel from './QAModal';
 import { FaFacebookSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
 import Modal from '../../reusable-components/Modal';
+import Link from 'next/link';
+import { createAvatar } from '@dicebear/avatars';
+import * as style from '@dicebear/avatars-bottts-sprites';
+import Image from 'next/image';
+import Timer from './Timer';
 
 type Answers = {
   [key: string]: string;
@@ -19,16 +24,23 @@ interface QAModelInterface {
 
 type QAModelsType = QAModelInterface[];
 
-const QAPanel = () => {
+type QAPanelProps = {
+  userName: string | undefined;
+};
+
+const QAPanel = ({ userName }: QAPanelProps) => {
   const {
     totalExercises,
     completedExercises,
     setCompletedExercises,
     currentExerciseNumber,
-    currentExerciseBlock,
     isNavPanelOpen,
     toggleIsNavPanelOpen,
   } = useContext(ReactExerciseCtx);
+
+  useEffect(() => {
+    console.log("QAPanel rendering");
+  });
 
   const [answers, setAnswers] = useState<Answers>({});
   const [inputAnswers, setInputAnswers] = useState<typeof answers>({});
@@ -36,7 +48,18 @@ const QAPanel = () => {
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [isUserTrying, setIsUserTrying] = useState(true);
   const [isResultsModalOpen, toggleIsResultsModalOpen] = useToggle(false);
-  
+  const [shouldTimerBeStopped, setShouldTimerBeStopped] = useToggle(false);
+  const svgSeed = useMemo(
+    () => `${Math.floor(Math.random() * 1000)}`,
+    [userName]
+  );
+
+  // const svgSeed = `${Math.floor(Math.random() * 1000)}`;
+
+  useEffect(() => {
+    console.log('svgSeed: ', svgSeed);
+  }, [svgSeed]);
+
   const hasUserCompletedAllExercises =
     completedExercises.length === totalExercises;
 
@@ -56,10 +79,6 @@ const QAPanel = () => {
     }
   }, [isAnswerCorrect, hasUserCompletedAllExercises]);
 
-  // useEffect(() => {
-  //   console.log('isResultsModalOpen: ', isResultsModalOpen);
-  // }, [isResultsModalOpen]);
-
   const handleAnsSubmittion = () => {
     setIsUserTrying(false);
     if (JSON.stringify(inputAnswers) === JSON.stringify(answers)) {
@@ -75,7 +94,7 @@ const QAPanel = () => {
     }
   };
 
-  const QAModels: QAModelsType = [
+  const QAModals: QAModelsType = [
     {
       exerciseNumber: 1,
       quesText:
@@ -90,7 +109,9 @@ const QAPanel = () => {
             type='text'
             name='answerOne'
             onChange={handleInputTyping}
-            className={canShowAns ? 'text-rose-700 font-medium' : 'text-black'}
+            className={`${
+              canShowAns ? 'text-rose-700 font-medium' : 'text-black'
+            } `}
           />
           {`(myElement, document.getElementById('root'))`};
         </code>
@@ -897,7 +918,7 @@ component and the style sheet are in the same directory.`,
 
   const memoizedCurrentQAModelData = useMemo(
     () =>
-      QAModels.find((model) => model.exerciseNumber === currentExerciseNumber),
+      QAModals.find((modal) => currentExerciseNumber === modal.exerciseNumber),
     [currentExerciseNumber, inputAnswers, canShowAns, answers]
   ) as QAModelInterface;
 
@@ -907,12 +928,19 @@ component and the style sheet are in the same directory.`,
     setIsUserTrying(true);
     setIsAnswerCorrect(false);
   }, [currentExerciseNumber]);
+  // dataUri: true,
+
+  let avataar = createAvatar(style, {
+    seed: svgSeed,
+  });
 
   return (
     <>
       <Modal
         isOpen={isResultsModalOpen}
         isOpenToggler={toggleIsResultsModalOpen}
+        position='top-[15%] left-[30%]'
+        isWithCrossButton
       >
         <h2 className='capitalize text-center text-3xl mb-10'>
           congratulations🎉!
@@ -926,19 +954,62 @@ component and the style sheet are in the same directory.`,
           <FaTwitterSquare className='w-12 cursor-pointer h-auto text-[#1da1f2]' />
           <FaLinkedin className='w-12 cursor-pointer h-auto text-[#2867b2]' />
         </div>
+        <section className='flex flex-nowrap gap-x-5 justify-center items-center'>
+          <Link href='/dashboard'>
+            <a className='modal-btn text-base capitalize px-12 font-semibold py-3 '>
+              see yourself in comparison with others
+            </a>
+          </Link>
+          <Link href='/'>
+            <a className='m-0 capitalize text-black text-base font-semibold'>
+              back to home
+            </a>
+          </Link>
+        </section>
       </Modal>
       <div className='grow px-6 pt-4'>
-        {!isNavPanelOpen && (
-          <div
-            className='flex-none w-8 cursor-pointer h-auto'
-            onClick={() => toggleIsNavPanelOpen()}
-          >
-            <MenuIcon />
-          </div>
-        )}
-        {/* <p className='text-green-500 text-lg font-bold'>
-          {completedExercises.toString() || 'Completed exercises list is empty'}
-        </p> */}
+        <button
+          className='modal-btn text-base px-5 py-2'
+          onClick={setShouldTimerBeStopped}
+        >
+          toggle timer
+        </button>
+        <section className='relative'>
+          {!isNavPanelOpen && (
+            <div
+              className='w-8 cursor-pointer h-auto absolute top-0'
+              onClick={() => toggleIsNavPanelOpen()}
+            >
+              <MenuIcon />
+            </div>
+          )}
+          {userName && (
+            <aside className='flex flex-col justify-between items-stretch gap-y-5 pr-4 w-fit ml-auto'>
+              <header className='flex flex-nowrap justify-between items-center gap-x-5'>
+                <div className='w-fit overflow-hidden shadow-lg outline outline-2 outline-green-300'>
+                  <Image
+                    src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                      avataar
+                    )}`}
+                    alt='avatar not available'
+                    width={65}
+                    height={45}
+                  />
+                </div>
+                <p className='capitalize text-lg font-semibold max-w-[20ch] whitespace-nowrap overflow-hidden text-ellipsis'>
+                  {userName}
+                </p>
+              </header>
+              <hr />
+              <footer className='flex flex-nowrap justify-center items-center gap-x-10'>
+                <ClockIcon className='w-9 text-green-600 h-auto' />
+                <div>
+                  <Timer shouldTimerBeStopped={shouldTimerBeStopped} />
+                </div>
+              </footer>
+            </aside>
+          )}
+        </section>
         <section className='pt-20'>
           <h1 className='mb-6 capitalize text-4xl font-medium'>exercise:</h1>
           <QAModel

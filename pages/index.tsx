@@ -1,21 +1,13 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
 
 const Home: NextPage = () => {
   return (
-    <div className='min-h-screen flex flex-col overflow-auto mb-20'>
+    <div className='min-h-screen flex flex-col overflow-auto'>
       <h1 className='capitalize bg-neutral-800 px-6 py-6 text-white font-semibold text-2xl grow-0'>
         Welcome to react quiz app
       </h1>
       <div className='grow flex-col justify-center items-start pt-28 relative'>
-        {/* <div className='w-fit right-0 -z-50'>
-          <Image
-            src='/images/cylinder-react.png'
-            alt='js cup iamge'
-            layout='fill'
-          />
-        </div> */}
         <h1 className='capitalize relative leading-[1.3] mx-auto max-w-[20ch] text-5xl text-center font-bold text-gray-800 mb-4'>
           test your basic react skills with react quiz
         </h1>

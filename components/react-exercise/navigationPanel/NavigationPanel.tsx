@@ -10,16 +10,27 @@ interface NavPanelProps {
 
 const NavigationPanel = ({ exercises }: NavPanelProps) => {
   const { completedExercises, totalExercises } = useContext(ReactExerciseCtx);
+  const hasUserCompletedAllExercises =
+    completedExercises.length === totalExercises;
+  const bgColor = hasUserCompletedAllExercises
+    ? 'bg-green-300'
+    : 'bg-neutral-200';
 
   return (
     <div className='shadow-2xl bg-neutral-800 min-h-screen'>
       <Icons />
-      <div className='px-5 py-4 bg-neutral-200'>
+      <section className={`px-5 py-4 ${bgColor}`}>
         <p className='text-center'>
-          Completed {completedExercises.length} of {totalExercises} Exercises:{' '}
+          {hasUserCompletedAllExercises ? (
+            <span>{`You've completed all Exercises🎉`}</span>
+          ) : (
+            <span>
+              Completed {completedExercises.length} of {totalExercises}{' '}
+              Exercises:{' '}
+            </span>
+          )}
         </p>
-      </div>
-
+      </section>
       <ExerciseBlocks exercisesData={exercises.data} />
     </div>
   );

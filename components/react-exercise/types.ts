@@ -12,7 +12,7 @@ export interface ExercisesData {
       exerciseNumber: number
     }[]
   }[],
-  meta: {
+  meta?: {
     totalExercises: number
   }
 }
