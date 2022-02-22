@@ -1,7 +1,10 @@
 import { ClockIcon, MenuIcon } from '@heroicons/react/solid';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useToggle from '../../../hooks/useToggle';
-import { ReactExerciseCtx } from '../../../pages/react-exercise';
+import {
+  CompletedExercises,
+  ReactExerciseCtx,
+} from '../../../pages/react-exercise';
 import QAModel from './QAModal';
 import { FaFacebookSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
 import Modal from '../../reusable-components/Modal';
@@ -28,6 +31,15 @@ type QAPanelProps = {
   userName: string | undefined;
 };
 
+function getTotalScores(completedExercises: CompletedExercises): number {
+  return Object.values(completedExercises).reduce(
+    (totalScores, completeExercise) => {
+      return totalScores + completeExercise.scores;
+    },
+    0
+  );
+}
+
 const QAPanel = ({ userName }: QAPanelProps) => {
   const {
     totalExercises,
@@ -37,32 +49,18 @@ const QAPanel = ({ userName }: QAPanelProps) => {
     isNavPanelOpen,
     toggleIsNavPanelOpen,
   } = useContext(ReactExerciseCtx);
-
-  useEffect(() => {
-    console.log('QAPanel rendering');
-  });
-
   const [answers, setAnswers] = useState<Answers>({});
   const [inputAnswers, setInputAnswers] = useState<typeof answers>({});
   const [canShowAns, handleCanShowAns] = useToggle(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [isUserTrying, setIsUserTrying] = useState(true);
   const [isResultsModalOpen, toggleIsResultsModalOpen] = useToggle(false);
-  const [shouldTimerBeStopped, setShouldTimerBeStopped] = useToggle(false);
-  const svgSeed = useMemo(
-    () => `${Math.floor(Math.random() * 1000)}`,
-    [userName]
-  );
-
-  // const svgSeed = `${Math.floor(Math.random() * 1000)}`;
-  console.log();
-
-  useEffect(() => {
-    console.log('svgSeed: ', svgSeed);
-  }, [svgSeed]);
-
+  const [shouldTimerBeStopped, toggleShouldTimerBeStopped] = useToggle(false);
+  const controllingTimerOnce = useRef<1 | 0>(0);
+  const svgSeed = useMemo(() => `${Math.floor(Math.random() * 1000)}`, []);
+  const totalScores = getTotalScores(completedExercises);
   const hasUserCompletedAllExercises =
-    completedExercises.length === totalExercises;
+    Object.keys(completedExercises).length === totalExercises;
 
   const handleInputTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -74,21 +72,32 @@ const QAPanel = ({ userName }: QAPanelProps) => {
     });
   };
 
+  // useEffect(() => {
+  //   console.log('QAPanel rendering');
+  // });
+
   useEffect(() => {
     if (isAnswerCorrect && hasUserCompletedAllExercises) {
+      if (!controllingTimerOnce.current) {
+        toggleShouldTimerBeStopped();
+      }
+      controllingTimerOnce.current = 1;
       toggleIsResultsModalOpen();
     }
-  }, [isAnswerCorrect, hasUserCompletedAllExercises]);
+  }, [isAnswerCorrect, hasUserCompletedAllExercises, toggleIsResultsModalOpen]);
 
-  const handleAnsSubmittion = () => {
+  const handleAnsSubmittion = (didUserSeeAnswer: boolean) => {
     setIsUserTrying(false);
     if (JSON.stringify(inputAnswers) === JSON.stringify(answers)) {
       setIsAnswerCorrect(true);
-      if (!completedExercises.includes(currentExerciseNumber)) {
-        setCompletedExercises((completedExercises) => [
+      if (!(currentExerciseNumber in completedExercises)) {
+        setCompletedExercises((completedExercises) => ({
           ...completedExercises,
-          currentExerciseNumber,
-        ]);
+          [currentExerciseNumber]: {
+            currentExerciseNumber,
+            scores: didUserSeeAnswer ? 0 : 1,
+          },
+        }));
       }
     } else {
       setIsAnswerCorrect(false);
@@ -929,7 +938,6 @@ component and the style sheet are in the same directory.`,
     setIsUserTrying(true);
     setIsAnswerCorrect(false);
   }, [currentExerciseNumber]);
-  // dataUri: true,
 
   let avataar = createAvatar(style, {
     seed: svgSeed,
@@ -947,7 +955,11 @@ component and the style sheet are in the same directory.`,
           congratulations🎉!
         </h2>
         <p className='text-xl text-center mb-6'>
-          You have completed all {totalExercises} React exercises.
+          You have got{' '}
+          <span className='text-green-600 text-2xl font-semibold'>
+            {totalScores}
+          </span>{' '}
+          out of total {totalExercises} scores.
         </p>
         <p className='text-center mb-6'>Share your score:</p>
         <div className='flex justify-center items-center mb-20 gap-1'>
@@ -969,12 +981,6 @@ component and the style sheet are in the same directory.`,
         </section>
       </Modal>
       <div className='grow px-6 pt-4'>
-        <button
-          className='modal-btn text-base px-5 py-2'
-          onClick={setShouldTimerBeStopped}
-        >
-          toggle timer
-        </button>
         <section className='relative'>
           {!isNavPanelOpen && (
             <div

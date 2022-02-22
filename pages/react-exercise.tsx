@@ -13,6 +13,16 @@ import Modal from '../components/reusable-components/Modal';
 import Link from 'next/link';
 import { useFormInputs } from '../hooks/useFormInputs';
 
+type CompletedExercise = {
+  exerciseNumber: number;
+  scores: 0 | 1;
+};
+
+// !! narrow down type of key from string to range of number types
+export type CompletedExercises = {
+  [key: string]: CompletedExercise;
+};
+
 type ReactExerciseContextInterface = {
   currentExerciseBlock: number;
   setCurrentExerciseBlock: SetStateType<number>;
@@ -22,8 +32,8 @@ type ReactExerciseContextInterface = {
   toggleIsNavPanelOpen: () => void;
   totalExerciseBlocks: number;
   totalExercises: number;
-  completedExercises: number[];
-  setCompletedExercises: SetStateType<number[]>;
+  completedExercises: CompletedExercises;
+  setCompletedExercises: SetStateType<CompletedExercises>;
 };
 
 export const ReactExerciseCtx = createContext<ReactExerciseContextInterface>(
@@ -35,15 +45,15 @@ const ReactExercisePage = () => {
   const [currentExerciseNumber, setCurrentExerciseNumber] = useState<number>(1);
   const [currentExerciseBlock, setCurrentExerciseBlock] = useState<number>(1);
   const [isNavPanelOpen, toggleIsNavPanelOpen] = useToggle(true);
-  const [isUserFormOpen, toggleIsUserFormOpen] = useToggle(false);
-  const [completedExercises, setCompletedExercises] = useState<number[]>([]);
+  const [isUserFormOpen, toggleIsUserFormOpen] = useToggle(true);
+  const [completedExercises, setCompletedExercises] =
+    useState<CompletedExercises>({});
   const [userFormInputStore, userFormDispatch] = useFormInputs();
   const firstnameInputRef = useRef<HTMLInputElement | null>(null);
   const lastnameInputRef = useRef<HTMLInputElement | null>(null);
   const [userName, setUserName] = useState<string | undefined>(undefined);
   const totalExerciseBlocks: number = exercises.data.length;
-  const totalExercises: number = exercises.data.at(-1)?.exercises.at(-1)
-    ?.exerciseNumber as number;
+  const totalExercises: number = exercises.meta.totalExercises;
 
   const onUserFormSubmittion = (e: React.FormEvent) => {
     const userName: string = `${userFormInputStore.firstname.trim()} ${userFormInputStore.lastname.trim()}`;
@@ -53,17 +63,16 @@ const ReactExercisePage = () => {
   };
 
   useEffect(() => {
-    toggleIsUserFormOpen();
-    // console.log(firstnameInputRef.current);
-  }, []);
-
-  useEffect(() => {
     if (userFormInputStore.autoFocusInputName === 'firstname') {
       firstnameInputRef.current?.focus();
     } else {
       lastnameInputRef.current?.focus();
     }
   }, [userFormInputStore]);
+
+  useEffect(() => {
+    console.log(Object.values(completedExercises));
+  }, [completedExercises]);
 
   return (
     <>
@@ -72,9 +81,8 @@ const ReactExercisePage = () => {
         isOpenToggler={toggleIsUserFormOpen}
         width='w-[30%]'
         position='top-[6%] left-[40%]'
-        isWithCrossButton
       >
-        <section className='mt-10'>
+        <section className='mt-10 pt-6'>
           <form
             className='flex flex-col gap-y-10 justify-start items-stretch'
             onSubmit={onUserFormSubmittion}

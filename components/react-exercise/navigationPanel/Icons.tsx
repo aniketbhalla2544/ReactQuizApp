@@ -12,12 +12,10 @@ const Icons = () => {
     setCurrentExerciseNumber,
     setCompletedExercises,
     toggleIsNavPanelOpen,
-  
-  
   } = useContext(ReactExerciseCtx);
 
   const reset = () => {
-    setCompletedExercises([]);
+    setCompletedExercises({});
     setCurrentExerciseNumber(1);
     setCurrentExerciseBlock(1);
   };

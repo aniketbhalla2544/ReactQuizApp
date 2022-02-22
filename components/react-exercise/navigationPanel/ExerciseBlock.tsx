@@ -22,7 +22,7 @@ const ExerciseBlock = ({
   const exerciseBlockId = id;
 
   const isBlockExerciseCompleted = (exerciseNumber: number): boolean => {
-    return completedExercises.includes(exerciseNumber);
+    return Object.keys(completedExercises).includes(`${exerciseNumber}`);
   };
   const onBlockExerciseClick = (exerciseNumber: number) => {
     setCurrentExerciseNumber(exerciseNumber);
@@ -64,7 +64,6 @@ const ExerciseBlock = ({
                     : 'bg-white hover:bg-slate-200'
                 }  text-sm px-7 py-3  cursor-pointer tracking-wider whitespace-nowrap`}
               >
-                {/* Exercise {index + 1} */}
                 {isBlockExerciseCompleted(blockExercise.exerciseNumber) && (
                   <span>
                     <CheckIcon

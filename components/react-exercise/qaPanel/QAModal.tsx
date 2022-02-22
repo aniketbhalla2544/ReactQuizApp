@@ -3,7 +3,6 @@ import { memo, useContext, useEffect, useRef, useState } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import QAButton from './QAButton';
 import { SetStateType } from '../types';
-import useToggle from '../../../hooks/useToggle';
 
 interface QAModelProps {
   isUserTrying: boolean;
@@ -11,7 +10,7 @@ interface QAModelProps {
   canShowAns: boolean;
   quesText: string;
   children: React.ReactNode;
-  handleAnsSubmittion: () => void;
+  handleAnsSubmittion: (didUserSeeAnswer: boolean) => void;
   handleCanShowAns: () => void;
   setIsUserTrying: SetStateType<boolean>;
   setIsAnswerCorrect: SetStateType<boolean>;
@@ -35,23 +34,22 @@ const QAModel = ({
     totalExercises,
     completedExercises,
   } = useContext(ReactExerciseCtx);
+  const didUserSeeAnswer = useRef(false);
 
-  // useEffect(() => {
-  //   console.log('-----------START-------------------');
-  //   console.log('QAModal rendering');
-  // });
-
-  const [hide] = useToggle();
-  const [isUserAlertModalOpen, toggleIsUserAlertModalOpen] = useToggle(false); // alert to complete all other exercises at first place
   const hasUserCompletedAllExercises =
-    completedExercises.length === totalExercises;
+    Object.keys(completedExercises).length === totalExercises;
   const isUserAtLastExercise = currentExerciseNumber === totalExercises;
-  const shouldSubmittionButtonVisible: boolean =
-    (isUserAtLastExercise && isAnswerCorrect) || !canShowAns;
 
   const onShowAnsClick = () => {
+    didUserSeeAnswer.current = true;
+    console.log(didUserSeeAnswer);
     handleCanShowAns();
   };
+
+  useEffect(() => {
+    didUserSeeAnswer.current = false;
+    console.log(didUserSeeAnswer);
+  }, [quesText]);
 
   return (
     <>
@@ -98,7 +96,7 @@ const QAModel = ({
               onClick={() => {
                 // if user is trying
                 if (isUserTrying) {
-                  handleAnsSubmittion();
+                  handleAnsSubmittion(didUserSeeAnswer.current);
                 }
                 // if user is not trying
                 else {
@@ -110,8 +108,7 @@ const QAModel = ({
                       isUserAtLastExercise &&
                       !hasUserCompletedAllExercises
                     ) {
-                      // !! generate some other modal if user is at last exercise but haven't completed all exercises yet.
-                      toggleIsUserAlertModalOpen();
+                      // toggleIsUserAlertModalOpen();
                     } else {
                       setCurrentExerciseBlock(
                         (currentExerciseBlock) => currentExerciseBlock + 1

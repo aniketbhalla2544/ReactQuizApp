@@ -12,10 +12,6 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
   const intervalId = useRef<NodeJS.Timer>();
 
   useEffect(() => {
-    console.log('Timer rendering');
-  });
-
-  useEffect(() => {
     intervalId.current = setInterval(() => {
       if (counter.current < 62) {
         counter.current++;
@@ -58,7 +54,15 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
 
   return (
     <p className='text-lg font-semibold '>
-      {hrs} : {mins} : {sec}
+      <span
+        className={`${
+          shouldTimerBeStopped
+            ? 'inline-block px-3 py-1 rounded-md bg-red-100'
+            : ''
+        }`}
+      >
+        {hrs} : {mins} : {sec}
+      </span>
     </p>
   );
 };

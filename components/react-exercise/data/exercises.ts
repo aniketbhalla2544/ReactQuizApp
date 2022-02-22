@@ -193,5 +193,8 @@ const exercisesData = {
     //   ]
     // },
   ],
+  meta: {
+    totalExercises: 2
+  }
 }
 export default exercisesData;

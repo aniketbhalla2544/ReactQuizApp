@@ -10,8 +10,9 @@ interface NavPanelProps {
 
 const NavigationPanel = ({ exercises }: NavPanelProps) => {
   const { completedExercises, totalExercises } = useContext(ReactExerciseCtx);
+  const completedExercisesLength = Object.keys(completedExercises).length;
   const hasUserCompletedAllExercises =
-    completedExercises.length === totalExercises;
+    completedExercisesLength === totalExercises;
   const bgColor = hasUserCompletedAllExercises
     ? 'bg-green-300'
     : 'bg-neutral-200';
@@ -22,10 +23,10 @@ const NavigationPanel = ({ exercises }: NavPanelProps) => {
       <section className={`px-5 py-4 ${bgColor}`}>
         <p className='text-center'>
           {hasUserCompletedAllExercises ? (
-            <span>{`You've completed all Exercises🎉`}</span>
+            <span>{`Exercises completed🎉 : Practise Phase`}</span>
           ) : (
             <span>
-              Completed {completedExercises.length} of {totalExercises}{' '}
+              Completed {completedExercisesLength} of {totalExercises}{' '}
               Exercises:{' '}
             </span>
           )}
