@@ -23,7 +23,7 @@ const NavigationPanel = ({ exercises }: NavPanelProps) => {
       <section className={`px-5 py-4 ${bgColor}`}>
         <p className='text-center'>
           {hasUserCompletedAllExercises ? (
-            <span>{`Exercises completed🎉 : Practise Phase`}</span>
+            <span>{`You've completed all exercises🎉`}</span>
           ) : (
             <span>
               Completed {completedExercisesLength} of {totalExercises}{' '}

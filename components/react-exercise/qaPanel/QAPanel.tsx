@@ -6,13 +6,12 @@ import {
   ReactExerciseCtx,
 } from '../../../pages/react-exercise';
 import QAModel from './QAModal';
-import { FaFacebookSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
-import Modal from '../../reusable-components/Modal';
-import Link from 'next/link';
-import { createAvatar } from '@dicebear/avatars';
-import * as style from '@dicebear/avatars-bottts-sprites';
-import Image from 'next/image';
 import Timer from './Timer';
+import { updateCurrentUserScores } from '../../../features/CurrentUserSlice';
+import ResultsModal from './ResultsModal';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
+import ProfileAvtaarWithName from '../../ProfileAvtaarWithName';
+import { addNewTestResult } from '../../../features/TestResultsSlice';
 
 type Answers = {
   [key: string]: string;
@@ -27,10 +26,6 @@ interface QAModelInterface {
 
 type QAModelsType = QAModelInterface[];
 
-type QAPanelProps = {
-  userName: string | undefined;
-};
-
 function getTotalScores(completedExercises: CompletedExercises): number {
   return Object.values(completedExercises).reduce(
     (totalScores, completeExercise) => {
@@ -40,7 +35,7 @@ function getTotalScores(completedExercises: CompletedExercises): number {
   );
 }
 
-const QAPanel = ({ userName }: QAPanelProps) => {
+const QAPanel = () => {
   const {
     totalExercises,
     completedExercises,
@@ -57,10 +52,15 @@ const QAPanel = ({ userName }: QAPanelProps) => {
   const [isResultsModalOpen, toggleIsResultsModalOpen] = useToggle(false);
   const [shouldTimerBeStopped, toggleShouldTimerBeStopped] = useToggle(false);
   const controllingTimerOnce = useRef<1 | 0>(0);
-  const svgSeed = useMemo(() => `${Math.floor(Math.random() * 1000)}`, []);
-  const totalScores = getTotalScores(completedExercises);
+  const totalScores: number = getTotalScores(completedExercises);
   const hasUserCompletedAllExercises =
     Object.keys(completedExercises).length === totalExercises;
+  const appDispatch = useAppDispatch();
+  const {
+    name,
+    scores,
+    time: { hrs, mins, sec },
+  } = useAppSelector((state) => state.currentUserState.value.currentUser);
 
   const handleInputTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,21 +72,20 @@ const QAPanel = ({ userName }: QAPanelProps) => {
     });
   };
 
-  // useEffect(() => {
-  //   console.log('QAPanel rendering');
-  // });
-
   useEffect(() => {
-    if (isAnswerCorrect && hasUserCompletedAllExercises) {
-      if (!controllingTimerOnce.current) {
-        toggleShouldTimerBeStopped();
-      }
-      controllingTimerOnce.current = 1;
-      toggleIsResultsModalOpen();
+    if (name && scores && (hrs || mins || sec)) {
+      appDispatch(
+        addNewTestResult({
+          name: name,
+          scores: scores,
+          mins: mins,
+        })
+      );
     }
-  }, [isAnswerCorrect, hasUserCompletedAllExercises, toggleIsResultsModalOpen]);
+  }, [name, scores, hrs, mins, sec, appDispatch]);
 
   const handleAnsSubmittion = (didUserSeeAnswer: boolean) => {
+    const userScores = didUserSeeAnswer ? 0 : 1;
     setIsUserTrying(false);
     if (JSON.stringify(inputAnswers) === JSON.stringify(answers)) {
       setIsAnswerCorrect(true);
@@ -95,7 +94,7 @@ const QAPanel = ({ userName }: QAPanelProps) => {
           ...completedExercises,
           [currentExerciseNumber]: {
             currentExerciseNumber,
-            scores: didUserSeeAnswer ? 0 : 1,
+            scores: userScores,
           },
         }));
       }
@@ -939,47 +938,32 @@ component and the style sheet are in the same directory.`,
     setIsAnswerCorrect(false);
   }, [currentExerciseNumber]);
 
-  let avataar = createAvatar(style, {
-    seed: svgSeed,
-  });
+  useEffect(() => {
+    if (isAnswerCorrect && hasUserCompletedAllExercises) {
+      if (!controllingTimerOnce.current) {
+        toggleShouldTimerBeStopped();
+        appDispatch(updateCurrentUserScores(totalScores));
+      }
+      controllingTimerOnce.current = 1;
+      toggleIsResultsModalOpen();
+    }
+  }, [
+    isAnswerCorrect,
+    hasUserCompletedAllExercises,
+    toggleIsResultsModalOpen,
+    toggleShouldTimerBeStopped,
+    appDispatch,
+    totalScores,
+  ]);
 
   return (
     <>
-      <Modal
-        isOpen={isResultsModalOpen}
-        isOpenToggler={toggleIsResultsModalOpen}
-        position='top-[15%] left-[30%]'
-        isWithCrossButton
-      >
-        <h2 className='capitalize text-center text-3xl mb-10'>
-          congratulations🎉!
-        </h2>
-        <p className='text-xl text-center mb-6'>
-          You have got{' '}
-          <span className='text-green-600 text-2xl font-semibold'>
-            {totalScores}
-          </span>{' '}
-          out of total {totalExercises} scores.
-        </p>
-        <p className='text-center mb-6'>Share your score:</p>
-        <div className='flex justify-center items-center mb-20 gap-1'>
-          <FaFacebookSquare className='w-12 cursor-pointer h-auto text-[#33558e]' />
-          <FaTwitterSquare className='w-12 cursor-pointer h-auto text-[#1da1f2]' />
-          <FaLinkedin className='w-12 cursor-pointer h-auto text-[#2867b2]' />
-        </div>
-        <section className='flex flex-nowrap gap-x-5 justify-center items-center'>
-          <Link href='/dashboard'>
-            <a className='modal-btn text-base capitalize px-12 font-semibold py-3 '>
-              see yourself in comparison with others
-            </a>
-          </Link>
-          <Link href='/'>
-            <a className='m-0 capitalize text-black text-base font-semibold'>
-              back to home
-            </a>
-          </Link>
-        </section>
-      </Modal>
+      <ResultsModal
+        isResultsModalOpen={isResultsModalOpen}
+        toggleIsResultsModalOpen={toggleIsResultsModalOpen}
+        totalScores={totalScores}
+        totalExercises={totalExercises}
+      />
       <div className='grow px-6 pt-4'>
         <section className='relative'>
           {!isNavPanelOpen && (
@@ -990,34 +974,18 @@ component and the style sheet are in the same directory.`,
               <MenuIcon />
             </div>
           )}
-          {userName && (
-            <aside className='flex flex-col justify-between items-stretch gap-y-5 pr-4 w-fit ml-auto'>
-              <header className='flex flex-nowrap justify-between items-center gap-x-5'>
-                <div className='w-fit overflow-hidden shadow-lg outline outline-2 outline-green-300'>
-                  <Image
-                    src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                      avataar
-                    )}`}
-                    alt='avatar not available'
-                    width={65}
-                    height={45}
-                  />
-                </div>
-                <p className='capitalize text-lg font-semibold max-w-[20ch] whitespace-nowrap overflow-hidden text-ellipsis'>
-                  {userName}
-                </p>
-              </header>
-              <hr />
-              <footer className='flex flex-nowrap justify-center items-center gap-x-10'>
-                <ClockIcon className='w-9 text-green-600 h-auto' />
-                <div>
-                  <Timer shouldTimerBeStopped={shouldTimerBeStopped} />
-                </div>
-              </footer>
-            </aside>
-          )}
+          <aside className='flex flex-col justify-between items-stretch gap-y-5 pr-4 w-fit ml-auto pt-4'>
+            <ProfileAvtaarWithName />
+            <hr />
+            <section className='flex flex-nowrap justify-center items-center gap-x-10'>
+              <ClockIcon className='w-9 text-green-600 h-auto' />
+              <div>
+                <Timer shouldTimerBeStopped={shouldTimerBeStopped} />
+              </div>
+            </section>
+          </aside>
         </section>
-        <section className='pt-20'>
+        <section className='pt-10'>
           <h1 className='mb-6 capitalize text-4xl font-medium'>exercise:</h1>
           <QAModel
             quesText={memoizedCurrentQAModelData?.quesText ?? 'no ques found!'}

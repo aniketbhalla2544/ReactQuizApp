@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <title>Asset 1css5</title>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="rectangle">
+      <g>
+        <g>
+          <path d="M29.32,178.41,13.58,2H186.42L170.66,178.38,99.89,198Z" style="fill: #1572b6"/>
+          <path d="M100,183l57.19-15.86L170.66,16.44H100Z" style="fill: #33a9dc"/>
+          <path d="M100,80.36h28.63l2-22.15H100V36.55h54.3l-.52,5.81L148.48,102H100Z" style="fill: #fff"/>
+          <path d="M100.07,136.48H100l-24-6.5-1.54-17.22H52.68l3,33.94L100,159h.13V136.48Z" style="fill: #ebebeb"/>
+          <path d="M126.76,101.06l-2.61,29L100,136.53v22.54l44.36-12.3.32-3.65,3.76-42.07h-21.7Z" style="fill: #fff"/>
+          <path d="M100.12,36.55V58.21H47.8l-.45-4.86-1-11-.52-5.81ZM100,80.36V102H76.17l-.42-4.87-1-11-.52-5.82H100Z" style="fill: #ebebeb"/>
+        </g>
+        <rect width="200" height="200" style="fill: none"/>
+      </g>
+    </g>
+  </g>
+</svg>

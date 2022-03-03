@@ -42,13 +42,11 @@ const QAModel = ({
 
   const onShowAnsClick = () => {
     didUserSeeAnswer.current = true;
-    console.log(didUserSeeAnswer);
     handleCanShowAns();
   };
 
   useEffect(() => {
     didUserSeeAnswer.current = false;
-    console.log(didUserSeeAnswer);
   }, [quesText]);
 
   return (

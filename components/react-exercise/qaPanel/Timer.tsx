@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { updateCurrentUserTime } from '../../../features/CurrentUserSlice';
+import { useAppDispatch } from '../../../hooks/reduxHooks';
 
 type TimerProps = {
   shouldTimerBeStopped: boolean;
@@ -8,8 +10,10 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
   const [sec, setSec] = useState<number>(0);
   const [mins, setMins] = useState<number>(0);
   const [hrs, setHrs] = useState<number>(0);
-  const counter = useRef<number>(1);
   const intervalId = useRef<NodeJS.Timer>();
+  const appDispatch = useAppDispatch();
+  const counter = useRef<number>(1);
+  const hasTimeDataDispatched = useRef(false);
 
   useEffect(() => {
     intervalId.current = setInterval(() => {
@@ -26,10 +30,22 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
     }, 1000);
   }, []);
 
+  // !! timer stops here
   useEffect(() => {
     return () => {
       if (shouldTimerBeStopped && intervalId.current) {
         clearInterval(intervalId.current);
+        if (!hasTimeDataDispatched.current) {
+          // console.log('time dispatched!');
+          appDispatch(
+            updateCurrentUserTime({
+              hrs: hrs,
+              mins: mins,
+              sec: sec,
+            })
+          );
+        }
+        hasTimeDataDispatched.current = true;
       }
     };
   });
