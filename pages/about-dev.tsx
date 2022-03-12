@@ -15,6 +15,9 @@ const AboutDevPage = () => {
         <Link href='/'>
           <a className='nav-item'>home</a>
         </Link>
+        <Link href='/courses'>
+          <a className='nav-item px-8 py-2'>Courses</a>
+        </Link>
       </Header>
       <main>
         <section className='relative pt-12 pb-28'>

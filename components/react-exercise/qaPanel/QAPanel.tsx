@@ -53,7 +53,9 @@ const QAPanel = () => {
   const [shouldTimerBeStopped, toggleShouldTimerBeStopped] = useToggle(false);
   const controllingTimerOnce = useRef<1 | 0>(0);
   const totalScores: number = getTotalScores(completedExercises);
+  // hack here---------------------------------
   const hasUserCompletedAllExercises =
+    // Object.keys(completedExercises).length === 2;
     Object.keys(completedExercises).length === totalExercises;
   const appDispatch = useAppDispatch();
   const {

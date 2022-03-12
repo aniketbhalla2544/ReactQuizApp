@@ -24,7 +24,7 @@ const Icons = () => {
     <div className='flex justify-between items-center px-3 py-3 bg-white'>
       <abbr title='Back To Home'>
         <Link href='/'>
-          <a target='_blank'>
+          <a>
             <HomeIcon className={iconStyle} />
           </a>
         </Link>

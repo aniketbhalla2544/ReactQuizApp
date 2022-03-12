@@ -12,9 +12,13 @@ const Home: NextPage = () => {
     <>
       <div className='min-h-screen flex flex-col overflow-auto'>
         <Header>
+          <Link href='/courses'>
+            <a className='nav-item px-8 py-2'>courses</a>
+          </Link>
+
           <Link href='/about-dev'>
             <a className='nav-item rounded-full border-2 border-green-400 px-8 py-2'>
-              about dev
+              About dev
             </a>
           </Link>
         </Header>
@@ -36,14 +40,14 @@ const Home: NextPage = () => {
           </section>
         </main>
       </div>
-      <section className='bg-neutral-800 py-20'>
+      {/* <section className='bg-neutral-800 py-20'>
         <CenterContainer>
           <h2 className='capitalize text-4xl text-white text-center mb-10'>
             courses
           </h2>
           <CourseList data={data} />
         </CenterContainer>
-      </section>
+      </section> */}
     </>
   );
 };
