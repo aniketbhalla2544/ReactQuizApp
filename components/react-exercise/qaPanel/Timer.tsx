@@ -1,19 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { updateCurrentUserTime } from '../../../features/CurrentUserSlice';
-import { useAppDispatch } from '../../../hooks/reduxHooks';
+import { setShouldTimerBeResetToFalse } from '../../../features/TimerState';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 
-type TimerProps = {
-  shouldTimerBeStopped: boolean;
-};
+type setTimeoutIdType = ReturnType<typeof setTimeout>;
 
-const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
+const Timer = () => {
   const [sec, setSec] = useState<number>(0);
   const [mins, setMins] = useState<number>(0);
   const [hrs, setHrs] = useState<number>(0);
   const intervalId = useRef<NodeJS.Timer>();
+  const setTimeoutId = useRef<setTimeoutIdType>();
   const appDispatch = useAppDispatch();
   const counter = useRef<number>(1);
   const hasTimeDataDispatched = useRef(false);
+
+  const shouldTimerBeStopped = useAppSelector(
+    (state) => state.timerState.shouldTimerBeStopped
+  );
+  const shouldTimerBeReset = useAppSelector(
+    (state) => state.timerState.shouldTimerBeReset
+  );
 
   useEffect(() => {
     intervalId.current = setInterval(() => {
@@ -30,13 +37,28 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
     }, 1000);
   }, []);
 
+  useEffect(() => {
+    if (shouldTimerBeReset) {
+      setSec(0);
+      setMins(0);
+      setHrs(0);
+      counter.current = 1;
+      setTimeoutId.current = setTimeout(() => {
+        appDispatch(setShouldTimerBeResetToFalse());
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(setTimeoutId.current as setTimeoutIdType);
+    };
+  }, [shouldTimerBeReset, appDispatch]);
+
   // !! timer stops here
   useEffect(() => {
     return () => {
       if (shouldTimerBeStopped && intervalId.current) {
         clearInterval(intervalId.current);
         if (!hasTimeDataDispatched.current) {
-          // console.log('time dispatched!');
           appDispatch(
             updateCurrentUserTime({
               hrs: hrs,
@@ -51,22 +73,26 @@ const Timer = ({ shouldTimerBeStopped }: TimerProps) => {
   });
 
   useEffect(() => {
-    if (sec === 0 && counter.current > 60) {
-      setMins((prevMins) => {
-        if (prevMins === 59) {
-          return 0;
-        } else {
-          return prevMins + 1;
-        }
-      });
+    if (!shouldTimerBeReset) {
+      if (sec === 0 && counter.current > 60) {
+        setMins((prevMins) => {
+          if (prevMins === 59) {
+            return 0;
+          } else {
+            return prevMins + 1;
+          }
+        });
+      }
     }
-  }, [sec]);
+  }, [sec, shouldTimerBeReset]);
 
   useEffect(() => {
-    if (mins === 0 && counter.current > 60) {
-      setHrs((hrs) => hrs + 1);
+    if (!shouldTimerBeReset) {
+      if (mins === 0 && counter.current > 60) {
+        setHrs((hrs) => hrs + 1);
+      }
     }
-  }, [mins]);
+  }, [mins, shouldTimerBeReset]);
 
   return (
     <p className='text-lg font-semibold '>

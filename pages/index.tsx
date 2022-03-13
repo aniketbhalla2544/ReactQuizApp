@@ -1,9 +1,5 @@
-import { ChevronDownIcon } from '@heroicons/react/solid';
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import CenterContainer from '../components/CenterContainer';
-import CourseList from '../components/CourseList';
-import data from '../components/courses/CoursesData';
 import Header from '../components/Header';
 import ScrollBelow from '../components/ScrollBelow';
 

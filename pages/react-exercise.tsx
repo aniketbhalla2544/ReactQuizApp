@@ -21,6 +21,10 @@ import {
   updateCurrentUserName,
 } from '../features/CurrentUserSlice';
 import UserQuizStartForm from '../components/react-exercise/userForm/UserQuizStartForm';
+import {
+  setShouldTimerBeResetToFalse,
+  setShouldTimerBeStoppedToFalse,
+} from '../features/TimerState';
 
 type CompletedExercise = {
   exerciseNumber: number;
@@ -72,6 +76,8 @@ const ReactExercisePage = () => {
   useEffect(() => {
     if (isUserFormOpen) {
       appDispatch(resetCurrentUser());
+      appDispatch(setShouldTimerBeStoppedToFalse());
+      appDispatch(setShouldTimerBeResetToFalse());
     }
   }, [isUserFormOpen, appDispatch]);
 

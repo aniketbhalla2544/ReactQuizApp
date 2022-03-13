@@ -12,6 +12,7 @@ import ResultsModal from './ResultsModal';
 import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import ProfileAvtaarWithName from '../../ProfileAvtaarWithName';
 import { addNewTestResult } from '../../../features/TestResultsSlice';
+import { setShouldTimerBeStoppedToTrue } from '../../../features/TimerState';
 
 type Answers = {
   [key: string]: string;
@@ -44,13 +45,13 @@ const QAPanel = () => {
     isNavPanelOpen,
     toggleIsNavPanelOpen,
   } = useContext(ReactExerciseCtx);
+
   const [answers, setAnswers] = useState<Answers>({});
   const [inputAnswers, setInputAnswers] = useState<typeof answers>({});
   const [canShowAns, handleCanShowAns] = useToggle(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(false);
   const [isUserTrying, setIsUserTrying] = useState(true);
   const [isResultsModalOpen, toggleIsResultsModalOpen] = useToggle(false);
-  const [shouldTimerBeStopped, toggleShouldTimerBeStopped] = useToggle(false);
   const controllingTimerOnce = useRef<1 | 0>(0);
   const totalScores: number = getTotalScores(completedExercises);
   // hack here---------------------------------
@@ -63,7 +64,6 @@ const QAPanel = () => {
     scores,
     time: { hrs, mins, sec },
   } = useAppSelector((state) => state.currentUserState.value.currentUser);
-
   const handleInputTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputAnswers(() => {
@@ -943,7 +943,7 @@ component and the style sheet are in the same directory.`,
   useEffect(() => {
     if (isAnswerCorrect && hasUserCompletedAllExercises) {
       if (!controllingTimerOnce.current) {
-        toggleShouldTimerBeStopped();
+        appDispatch(setShouldTimerBeStoppedToTrue());
         appDispatch(updateCurrentUserScores(totalScores));
       }
       controllingTimerOnce.current = 1;
@@ -953,7 +953,6 @@ component and the style sheet are in the same directory.`,
     isAnswerCorrect,
     hasUserCompletedAllExercises,
     toggleIsResultsModalOpen,
-    toggleShouldTimerBeStopped,
     appDispatch,
     totalScores,
   ]);
@@ -982,7 +981,7 @@ component and the style sheet are in the same directory.`,
             <section className='flex flex-nowrap justify-center items-center gap-x-10'>
               <ClockIcon className='w-9 text-green-600 h-auto' />
               <div>
-                <Timer shouldTimerBeStopped={shouldTimerBeStopped} />
+                <Timer />
               </div>
             </section>
           </aside>

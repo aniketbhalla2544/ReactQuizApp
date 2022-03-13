@@ -1,12 +1,15 @@
 import { HomeIcon, RefreshIcon, XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useContext } from 'react';
+import { setShouldTimerBeResetToTrue } from '../../../features/TimerState';
+import { useAppDispatch } from '../../../hooks/reduxHooks';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 
 const iconStyle = 'w-6 h-auto text-slate-700';
 const cursorIconStyle = `${iconStyle} cursor-pointer`;
 
 const Icons = () => {
+  const appDispatch = useAppDispatch();
   const {
     setCurrentExerciseBlock,
     setCurrentExerciseNumber,
@@ -18,7 +21,10 @@ const Icons = () => {
     setCompletedExercises({});
     setCurrentExerciseNumber(1);
     setCurrentExerciseBlock(1);
+    appDispatch(setShouldTimerBeResetToTrue());
   };
+
+  console.log('icons component rendered!');
 
   return (
     <div className='flex justify-between items-center px-3 py-3 bg-white'>
