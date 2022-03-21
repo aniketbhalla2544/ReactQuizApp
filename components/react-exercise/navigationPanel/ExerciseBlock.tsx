@@ -1,5 +1,6 @@
 import { CheckIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import { useContext } from 'react';
+import useMediaQuery from '../../../hooks/useMediaQuery';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import { ExercisesData } from '../types';
 
@@ -18,14 +19,20 @@ const ExerciseBlock = ({
     setCurrentExerciseNumber,
     currentExerciseBlock,
     setCurrentExerciseBlock,
+    handleIsNavPanelOpen,
+    handleCanShowAns,
   } = useContext(ReactExerciseCtx);
+
   const exerciseBlockId = id;
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   const isBlockExerciseCompleted = (exerciseNumber: number): boolean => {
     return Object.keys(completedExercises).includes(`${exerciseNumber}`);
   };
   const onBlockExerciseClick = (exerciseNumber: number) => {
     setCurrentExerciseNumber(exerciseNumber);
+    !isLargeScreen && handleIsNavPanelOpen.setBooleanStateFalse();
+    handleCanShowAns.setBooleanStateFalse();
   };
   const areCurrentAndBlockExerciseNumberSame = (
     exerciseNumber: number
@@ -39,10 +46,10 @@ const ExerciseBlock = ({
     <>
       <section
         onClick={() => setCurrentExerciseBlock(exerciseBlockId)}
-        className='relative capitalize text-slate-300 hover:text-white text-lg border-b-2 border-black px-7 py-3 cursor-pointer'
+        className='relative cursor-pointer border-b-2 border-black px-7 py-3 text-lg capitalize text-slate-300 hover:text-white'
       >
         {areCurrentAndBlockNumberSame && (
-          <ChevronRightIcon className='absolute top-1/3 -translate-x-5 inline w-5' />
+          <ChevronRightIcon className='absolute top-1/3 inline w-5 -translate-x-5' />
         )}
 
         {name}
@@ -62,7 +69,7 @@ const ExerciseBlock = ({
                   )
                     ? 'bg-green-600 text-white'
                     : 'bg-white hover:bg-slate-200'
-                }  text-sm px-7 py-3  cursor-pointer tracking-wider whitespace-nowrap`}
+                }  cursor-pointer whitespace-nowrap px-7  py-3 text-sm tracking-wider`}
               >
                 {isBlockExerciseCompleted(blockExercise.exerciseNumber) && (
                   <span>
@@ -73,7 +80,7 @@ const ExerciseBlock = ({
                         )
                           ? 'text-white'
                           : 'text-green-700'
-                      } inline mr-1 w-5 h-auto font-extrabold -translate-y-[0.098rem]`}
+                      } mr-1 inline h-auto w-5 -translate-y-[0.098rem] font-extrabold`}
                     />
                   </span>
                 )}

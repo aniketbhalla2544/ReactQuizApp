@@ -6,8 +6,7 @@ type TechStackIconProps = {
 
 const TechStackIcon = ({ imgSrc }: TechStackIconProps) => {
   return (
-    // <div className='border-4 border-green-500'>
-    <div className=''>
+    <div className='mx-auto lg:mx-0'>
       <Image src={imgSrc} width={50} height={50} alt='tech icon' />
     </div>
   );

@@ -8,12 +8,14 @@ export interface CourseProps {
 
 const Course = ({ name, description, bgColor }: CourseProps) => {
   return (
-    <section className='courseSection py-10 rounded-md px-36 shadow-lg'>
-      <h2 className='text-center text-[2.5rem] font-bold mb-2'>{name}</h2>
-      <p className='text-center text-base font-semibold text-gray-700 whitespace-nowrap mb-14'>
+    <section className='courseSection rounded-lg px-10 py-12 shadow-lg lg:py-10 lg:px-36'>
+      <h2 className='mb-2 text-center text-4xl font-bold lg:text-[2.5rem]'>
+        {name}
+      </h2>
+      <p className='mb-12 text-center text-base font-normal text-gray-700 lg:whitespace-nowrap'>
         {description}
       </p>
-      <button className='text-center mx-auto block max-w-fit bg-neutral-800 text-base font-semibold text-white hover:bg-black rounded-full px-14 py-3 whitespace-nowrap'>
+      <button className='mx-auto block max-w-fit whitespace-nowrap rounded-full bg-neutral-800 py-4 px-10 text-center text-base font-semibold tracking-wider text-white hover:bg-black lg:px-12 lg:py-4'>
         Learn {name}
       </button>
       <style jsx>{`

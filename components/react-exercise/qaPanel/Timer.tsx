@@ -45,7 +45,7 @@ const Timer = () => {
       counter.current = 1;
       setTimeoutId.current = setTimeout(() => {
         appDispatch(setShouldTimerBeResetToFalse());
-      }, 5000);
+      }, 50);
     }
 
     return () => {
@@ -95,11 +95,11 @@ const Timer = () => {
   }, [mins, shouldTimerBeReset]);
 
   return (
-    <p className='text-lg font-semibold '>
+    <p className='text-lg font-semibold'>
       <span
         className={`${
           shouldTimerBeStopped
-            ? 'inline-block px-3 py-1 rounded-md bg-red-100'
+            ? 'inline-block rounded-lg bg-red-100 px-3 py-1'
             : ''
         }`}
       >

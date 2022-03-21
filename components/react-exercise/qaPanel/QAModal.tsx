@@ -1,17 +1,19 @@
 import { ChevronRightIcon } from '@heroicons/react/solid';
-import { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import QAButton from './QAButton';
 import { SetStateType } from '../types';
+import useMediaQuery from '../../../hooks/useMediaQuery';
+import { StateBooleanHandler } from '../../../hooks/useBooleanStateController';
 
 interface QAModelProps {
   isUserTrying: boolean;
   isAnswerCorrect: boolean;
   canShowAns: boolean;
-  quesText: string;
+  quesText: string | JSX.Element;
   children: React.ReactNode;
   handleAnsSubmittion: (didUserSeeAnswer: boolean) => void;
-  handleCanShowAns: () => void;
+  handleCanShowAns: StateBooleanHandler;
   setIsUserTrying: SetStateType<boolean>;
   setIsAnswerCorrect: SetStateType<boolean>;
 }
@@ -34,15 +36,16 @@ const QAModel = ({
     totalExercises,
     completedExercises,
   } = useContext(ReactExerciseCtx);
-  const didUserSeeAnswer = useRef(false);
 
+  const didUserSeeAnswer = useRef(false);
   const hasUserCompletedAllExercises =
     Object.keys(completedExercises).length === totalExercises;
   const isUserAtLastExercise = currentExerciseNumber === totalExercises;
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   const onShowAnsClick = () => {
     didUserSeeAnswer.current = true;
-    handleCanShowAns();
+    handleCanShowAns.toggleBooleanState();
   };
 
   useEffect(() => {
@@ -50,19 +53,27 @@ const QAModel = ({
   }, [quesText]);
 
   return (
-    <>
+    <section>
       <div>
-        <pre className='text-black text-base font-medium mb-4'>{quesText}</pre>
+        <pre
+          id='ques'
+          className={`${
+            quesText instanceof Object ? 'leading-[1.8]' : 'leading-normal'
+          } mb-5 max-w-full whitespace-pre-wrap text-base text-black lg:mb-4 lg:text-lg`}
+        >
+          {quesText}
+        </pre>
         <div
+          id='quesWrapper'
           className={`${
             !isUserTrying && (isAnswerCorrect ? 'bg-green-100' : 'bg-red-200')
-          } ${isUserTrying && 'bg-gray-200'} rounded-md py-8 px-5  mb-8`}
+          } ${isUserTrying && 'bg-gray-200'} mb-8 rounded-lg px-5 py-5 lg:py-8`}
         >
           {!isUserTrying ? (
             <div
               className={`${
                 isAnswerCorrect ? 'text-green-500' : 'text-red-500'
-              }  text-3xl capitalize pl-5 py-[2em]`}
+              }  py-[2em] pl-5 text-3xl capitalize`}
             >
               {isAnswerCorrect ? (
                 <span>Correct!</span>
@@ -127,7 +138,11 @@ const QAModel = ({
               {isUserTrying && (
                 <>
                   <span>submit answer</span>
-                  <ChevronRightIcon className='w-6 h-auto m-0 p-0 translate-y-[0.1rem]' />
+                  <ChevronRightIcon
+                    className={`${
+                      isLargeScreen ? 'w-6 translate-y-[0.1rem]' : 'w-5'
+                    } m-0 h-auto  p-0`}
+                  />
                 </>
               )}
               {!isUserTrying &&
@@ -139,7 +154,7 @@ const QAModel = ({
             </QAButton>
           ))}
       </div>
-    </>
+    </section>
   );
 };
 

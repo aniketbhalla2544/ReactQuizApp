@@ -15,7 +15,7 @@ const QAButton = ({ children, color, mxAuto, onClick }: QAButtonProps) => {
       onClick={onClick}
       className={`${mxAuto} ${color} ${hoverColor} ${
         color === 'bg-green-600' ? 'mb-40' : ''
-      } text-[1.1rem] text-white rounded-full px-6 py-2 capitalize font-[550] whitespace-nowrap flex items-center`}
+      } flex items-center whitespace-nowrap rounded-full px-6 py-4 font-medium capitalize leading-none tracking-wide text-white lg:px-6 lg:py-3 lg:text-[1.1rem] lg:font-[550] lg:leading-normal`}
     >
       {children}
     </button>

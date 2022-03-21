@@ -20,32 +20,33 @@ const ResultsModal = ({
     <Modal
       isOpen={isResultsModalOpen}
       isOpenToggler={toggleIsResultsModalOpen}
-      position='top-[15%] left-[30%]'
+      width='w-[85%] lg:w-1/2'
+      position='top-0 lg:top-[15%] left-[10%] lg:left-[32%]'
     >
-      <h2 className='capitalize text-center text-3xl mb-10 mt-14'>
+      <h2 className='mb-10 mt-8 text-center text-3xl font-semibold capitalize lg:mt-12'>
         congratulations🎉!
       </h2>
-      <p className='text-xl text-center mb-6'>
+      <p className='mb-6 text-center text-xl'>
         You have got{' '}
-        <span className='text-green-600 text-2xl font-semibold'>
+        <span className='text-2xl font-semibold text-green-600'>
           {totalScores}
         </span>{' '}
         out of total {totalExercises} scores.
       </p>
-      <p className='text-center mb-6'>Share your score:</p>
-      <div className='flex justify-center items-center mb-20 gap-1'>
-        <FaFacebookSquare className='w-12 cursor-pointer h-auto text-[#33558e]' />
-        <FaTwitterSquare className='w-12 cursor-pointer h-auto text-[#1da1f2]' />
-        <FaLinkedin className='w-12 cursor-pointer h-auto text-[#2867b2]' />
+      <p className='mb-6 text-center'>Share your score:</p>
+      <div className='mb-20 flex items-center justify-center gap-1'>
+        <FaFacebookSquare className='h-auto w-12 cursor-pointer text-[#33558e]' />
+        <FaTwitterSquare className='h-auto w-12 cursor-pointer text-[#1da1f2]' />
+        <FaLinkedin className='h-auto w-12 cursor-pointer text-[#2867b2]' />
       </div>
-      <section className='flex flex-nowrap gap-x-5 justify-center items-center'>
+      <section className='flex flex-nowrap items-center justify-center gap-x-3 lg:gap-x-5'>
         <Link href='/dashboard'>
-          <a className='modal-btn text-base capitalize px-12 font-semibold py-3 '>
-            see yourself in comparison with others
+          <a className='modal-btn px-4 py-3 text-sm font-semibold capitalize lg:px-12  lg:py-3 lg:text-base'>
+            compare with others
           </a>
         </Link>
         <Link href='/'>
-          <a className='m-0 capitalize text-black text-base font-semibold'>
+          <a className='m-0 text-base font-semibold capitalize text-black'>
             back to home
           </a>
         </Link>

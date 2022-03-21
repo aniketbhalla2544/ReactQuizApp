@@ -26,15 +26,15 @@ const Modal = ({
   useEffect(() => setIsBrowser(true), []);
 
   const ModalContent = () => (
-    <section className='absolute top-0 left-0 h-[101.5%] w-full bg-black/40'>
+    <section className='fixed inset-0 z-50 grid min-h-screen w-full place-items-center overflow-x-hidden bg-black/60 lg:block'>
       <main
         className={`${
           width ? width : 'w-1/2'
-        } ${position} inline-block relative shadow-black/50 shadow-2xl bg-white px-6 pt-4 pb-12`}
+        } ${position} relative inline-block -translate-x-[12%] -translate-y-[10%] bg-white px-6 pt-4 pb-12 shadow-2xl shadow-black/50`}
       >
         {isWithCrossButton && (
           <XIcon
-            className='w-10 p-3 hover:bg-gray-200 h-auto block ml-auto cursor-pointer'
+            className='ml-auto block h-auto w-10 cursor-pointer p-3 hover:bg-gray-200'
             onClick={isOpenToggler}
           />
         )}
@@ -42,7 +42,7 @@ const Modal = ({
         {isWithCloseButton && (
           <button
             onClick={isOpenToggler}
-            className='capitalize bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full px-12 py-2 mx-auto block text-base'
+            className='mx-auto block rounded-full bg-green-600 px-12 py-2 text-base font-semibold capitalize text-white hover:bg-green-700'
           >
             close
           </button>

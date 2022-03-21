@@ -9,7 +9,7 @@ type ExerciseBlocksProps = {
 
 const ExerciseBlocks = ({ exercisesData }: ExerciseBlocksProps) => {
   return (
-    <ul className='overflow-y-scroll h-[40rem]'>
+    <ul className='relative left-0 right-0 max-h-[85vh] overflow-y-scroll'>
       {exercisesData.map((exerciseData) => {
         return (
           <ExerciseBlock key={exerciseData.id} exerciseData={exerciseData} />

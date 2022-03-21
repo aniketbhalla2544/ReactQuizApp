@@ -6,9 +6,9 @@ type HeaderProps = {
 
 const Header = ({ children }: HeaderProps) => {
   return (
-    <section className='bg-neutral-800 px-8 py-6 text-white flex justify-between items-center'>
+    <section className='flex items-center justify-between bg-neutral-800 px-4 py-7 text-white shadow-xl lg:px-8 lg:py-6'>
       <Link href='/'>
-        <a className='capitalize font-semibold text-2xl'>react quiz app</a>
+        <a className='text-2xl font-semibold capitalize'>react quiz app</a>
       </Link>
       <main>{children}</main>
     </section>

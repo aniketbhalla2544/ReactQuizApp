@@ -5,7 +5,9 @@ type CenterContainerProps = {
 };
 
 const CenterContainer = ({ children }: CenterContainerProps) => {
-  return <div className='max-w-screen-xl mx-auto'>{children}</div>;
+  return (
+    <div className='mx-auto max-w-full px-5 lg:max-w-screen-xl'>{children}</div>
+  );
 };
 
 export default CenterContainer;

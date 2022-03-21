@@ -1,9 +1,8 @@
-import { ErrorBoundary } from 'react-error-boundary';
 import React, {
   createContext,
   useCallback,
   useEffect,
-  useRef,
+  useMemo,
   useState,
 } from 'react';
 import NavigationPanel from '../components/react-exercise/navigationPanel/NavigationPanel';
@@ -13,9 +12,8 @@ import {
   SetStateType,
 } from '../components/react-exercise/types';
 import useToggle from '../hooks/useToggle';
-import ErrorFallback from '../components/ErrorFallback';
 import exercisesData from '../components/react-exercise/data/exercises';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch } from '../hooks/reduxHooks';
 import {
   resetCurrentUser,
   updateCurrentUserName,
@@ -25,6 +23,11 @@ import {
   setShouldTimerBeResetToFalse,
   setShouldTimerBeStoppedToFalse,
 } from '../features/TimerState';
+import useInititalRender from '../hooks/useInititalRender';
+import useMediaQuery from '../hooks/useMediaQuery';
+import useBooleanStateController, {
+  StateBooleanHandler,
+} from '../hooks/useBooleanStateController';
 
 type CompletedExercise = {
   exerciseNumber: number;
@@ -42,11 +45,13 @@ type ReactExerciseContextInterface = {
   currentExerciseNumber: number;
   setCurrentExerciseNumber: SetStateType<number>;
   isNavPanelOpen: boolean;
-  toggleIsNavPanelOpen: () => void;
+  handleIsNavPanelOpen: StateBooleanHandler;
   totalExerciseBlocks: number;
   totalExercises: number;
   completedExercises: CompletedExercises;
   setCompletedExercises: SetStateType<CompletedExercises>;
+  canShowAns: boolean;
+  handleCanShowAns: StateBooleanHandler;
 };
 
 export const ReactExerciseCtx = createContext<ReactExerciseContextInterface>(
@@ -55,15 +60,19 @@ export const ReactExerciseCtx = createContext<ReactExerciseContextInterface>(
 
 const ReactExercisePage = () => {
   const [exercises] = useState<ExercisesData>(exercisesData);
-  const [currentExerciseNumber, setCurrentExerciseNumber] = useState<number>(1);
-  const [currentExerciseBlock, setCurrentExerciseBlock] = useState<number>(1);
-  const [isNavPanelOpen, toggleIsNavPanelOpen] = useToggle(true);
+  const [currentExerciseNumber, setCurrentExerciseNumber] = useState(1);
+  const [currentExerciseBlock, setCurrentExerciseBlock] = useState(1);
+  const isItInitialRender = useInititalRender();
   const [completedExercises, setCompletedExercises] =
     useState<CompletedExercises>({});
+  const [canShowAns, handleCanShowAns] = useBooleanStateController(false);
   const totalExerciseBlocks: number = exercises.data.length;
   const totalExercises: number = exercises.meta.totalExercises;
   const [isUserFormOpen, toggleIsUserFormOpen] = useToggle(true);
   const appDispatch = useAppDispatch();
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const [isNavPanelOpen, handleIsNavPanelOpen] =
+    useBooleanStateController(isLargeScreen);
 
   const onUserFormSubmittion = useCallback(
     (userName: string) => {
@@ -74,44 +83,52 @@ const ReactExercisePage = () => {
   );
 
   useEffect(() => {
-    if (isUserFormOpen) {
+    if (isLargeScreen) {
+      handleIsNavPanelOpen.setBooleanStateTrue();
+    } else {
+      handleIsNavPanelOpen.setBooleanStateFalse();
+    }
+  }, [isLargeScreen, handleIsNavPanelOpen]);
+
+  useEffect(() => {
+    if (isItInitialRender) {
       appDispatch(resetCurrentUser());
       appDispatch(setShouldTimerBeStoppedToFalse());
       appDispatch(setShouldTimerBeResetToFalse());
     }
-  }, [isUserFormOpen, appDispatch]);
+  }, [isItInitialRender, appDispatch]);
 
   return (
-    <>
+    <section className='overflow-x-hidden'>
       <UserQuizStartForm
         isUserFormOpen={isUserFormOpen}
         toggleIsUserFormOpen={toggleIsUserFormOpen}
         onUserFormSubmittion={onUserFormSubmittion}
       />
-      <div className='flex'>
+      <div className=''>
         <ReactExerciseCtx.Provider
           value={{
             currentExerciseBlock,
             setCurrentExerciseBlock,
             currentExerciseNumber,
             setCurrentExerciseNumber,
-            isNavPanelOpen,
-            toggleIsNavPanelOpen,
             totalExerciseBlocks,
             totalExercises,
             completedExercises,
             setCompletedExercises,
+            isNavPanelOpen,
+            handleIsNavPanelOpen,
+            canShowAns,
+            handleCanShowAns,
           }}
         >
           {isNavPanelOpen && (
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-              <NavigationPanel exercises={exercises}></NavigationPanel>
-            </ErrorBoundary>
+            <NavigationPanel exercises={exercises}></NavigationPanel>
           )}
           {!isUserFormOpen && <QAPanel />}
         </ReactExerciseCtx.Provider>
       </div>
-    </>
+    </section>
   );
 };
 

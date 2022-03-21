@@ -16,6 +16,7 @@ import DataCard from '../components/dashboard/ProfileDataCard';
 import Header from '../components/Header';
 import ProfileAvtaarWithName from '../components/ProfileAvtaarWithName';
 import { useAppSelector } from '../hooks/reduxHooks';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const DashboardPage = () => {
   const {
@@ -24,46 +25,43 @@ const DashboardPage = () => {
     time: { hrs, mins, sec },
   } = useAppSelector((state) => state.currentUserState.value.currentUser);
   const testResults = useAppSelector((state) => state.testResultsState);
-  console.log(testResults);
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   return (
-    <section className='min-h-screen bg-gray-200 overflow-x-hidden pb-56 mb-0'>
+    <section className='mb-0 min-h-screen overflow-x-hidden bg-gray-200 pb-20 lg:pb-56'>
       <Header>
-        {/* <Link href='/'>
-          <a className='nav-item'>home</a>
-        </Link> */}
         <ProfileAvtaarWithName />
       </Header>
       <main className='pb-16'>
         <CenterContainer>
-          <h1 className='text-center capitalize text-5xl text-gray-600 font-bold my-12'>
+          <h1 className='my-12 text-center text-3xl font-bold capitalize text-gray-600 lg:text-5xl'>
             dashboard
           </h1>
-          <DashoardSection style='flex justify-between items-center space-x-16'>
+          <DashoardSection style='flex justify-between items-center space-y-12 lg:space-y-0 lg:space-x-16 flex-wrap py-0 lg:flex-nowrap mb-20'>
             <DataCard textCaption='username'>
-              <h1 className='text-3xl text-gray-700 font-bold capitalize'>
+              <h1 className='text-gray-700x text-2xl font-bold capitalize lg:text-3xl '>
                 {name || 'username'}
               </h1>
             </DataCard>
             <DataCard textCaption='scores'>
-              <h1 className='text-3xl text-gray-700 font-bold capitalize'>
+              <h1 className='text-2xl font-bold capitalize text-gray-700 lg:text-3xl'>
                 {`${scores}` || '0'}
               </h1>
             </DataCard>
             <DataCard textCaption='time taken'>
-              <h1 className='text-3xl text-gray-700 font-bold capitalize'>
+              <h1 className='text-2xl font-bold capitalize text-gray-700 lg:text-3xl'>
                 {hrs}
-                <span className='text-[0.7rem] mr-2 font-normal text-gray-400'>
+                <span className='mr-2 text-[0.7rem] font-normal text-gray-400'>
                   {' '}
                   hrs{' '}
                 </span>
                 {mins}
-                <span className='text-[0.7rem] mr-2 font-normal text-gray-400'>
+                <span className='mr-2 text-[0.7rem] font-normal text-gray-400'>
                   {' '}
                   mins{' '}
                 </span>
                 {sec}
-                <span className='text-[0.7rem] mr-2 font-normal text-gray-400'>
+                <span className='mr-2 text-[0.7rem] font-normal text-gray-400'>
                   {' '}
                   secs{' '}
                 </span>
@@ -71,23 +69,23 @@ const DashboardPage = () => {
             </DataCard>
           </DashoardSection>
           <DashoardSection style=''>
-            <div className='dashboard-element max-w-fit mx-auto px-40 py-14'>
-              <h1 className='capitalize text-4xl text-gray-600 font-bold mb-4'>
+            <div className='dashboard-element mx-auto max-w-fit py-10 px-10 lg:px-40 lg:py-14'>
+              <h1 className='mb-1 text-2xl font-bold capitalize text-gray-600 lg:mb-4 lg:text-4xl'>
                 players test results
               </h1>
-              <p className='text-gray-400 mb-12'>
+              <p className='mb-12 text-sm text-gray-400 lg:text-base'>
                 Below graph shows the test results of max 5 players who took
                 this test recently.
               </p>
               <BarChart
                 width={800}
-                className='-ml-12'
+                className='mx-auto max-w-full overflow-scroll lg:-ml-12 lg:max-w-none lg:overflow-auto'
                 height={400}
                 data={testResults}
                 margin={{
                   top: 5,
                   right: 30,
-                  left: 0,
+                  left: !isLargeScreen ? -35 : 0,
                   bottom: 5,
                 }}
               >
@@ -105,8 +103,8 @@ const DashboardPage = () => {
       </main>
       <footer>
         <Link href='/react-exercise'>
-          <a className='max-w-fit block modal-btn capitalize py-3 px-14 font-semibold text-2xl mx-auto'>
-            retake test <RefreshIcon className='w-6 inline-block' />
+          <a className='modal-btn mx-auto block max-w-fit py-3 px-14 text-base font-semibold capitalize lg:text-2xl'>
+            retake test <RefreshIcon className='inline-block w-6' />
           </a>
         </Link>
       </footer>

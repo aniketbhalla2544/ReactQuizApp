@@ -15,10 +15,10 @@
     @apply bg-green-600 hover:bg-green-700 text-white rounded-full
   }
   .nav-item{
-    @apply text-base font-semibold text-gray-200 hover:text-white capitalize
+    @apply text-base lg:font-semibold leading-none lg:leading-normal text-gray-200 hover:text-white capitalize
   }
   .dashboard-element{
-    @apply bg-white shadow-md rounded-sm
+    @apply bg-white shadow-lg rounded-sm
   }
 }
 
@@ -36,6 +36,12 @@ a {
   text-decoration: none;
 }
 
-* {
+*::before, *::after {
   box-sizing: border-box;
+} 
+
+mark{
+  background-color: rgba(0, 0, 0, 0.11);
+  padding: 0.3em 0.5em;
+  border-radius: 0.2em;
 }

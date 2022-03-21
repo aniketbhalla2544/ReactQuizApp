@@ -14,7 +14,7 @@ const Icons = () => {
     setCurrentExerciseBlock,
     setCurrentExerciseNumber,
     setCompletedExercises,
-    toggleIsNavPanelOpen,
+    handleIsNavPanelOpen,
   } = useContext(ReactExerciseCtx);
 
   const reset = () => {
@@ -24,28 +24,28 @@ const Icons = () => {
     appDispatch(setShouldTimerBeResetToTrue());
   };
 
-  console.log('icons component rendered!');
-
   return (
-    <div className='flex justify-between items-center px-3 py-3 bg-white'>
-      <abbr title='Back To Home'>
-        <Link href='/'>
-          <a>
-            <HomeIcon className={iconStyle} />
-          </a>
-        </Link>
-      </abbr>
+    <div className=' bg-white py-4 lg:py-3'>
+      <div className='mx-auto flex max-w-[80%] items-center justify-between lg:max-w-[85%]'>
+        <abbr title='Back To Home'>
+          <Link href='/'>
+            <a>
+              <HomeIcon className={iconStyle} />
+            </a>
+          </Link>
+        </abbr>
 
-      <abbr title='Reset Score'>
-        <RefreshIcon className={cursorIconStyle} onClick={reset} />
-      </abbr>
+        <abbr title='Reset Score'>
+          <RefreshIcon className={cursorIconStyle} onClick={reset} />
+        </abbr>
 
-      <abbr title='Close This Menu'>
-        <XIcon
-          className={cursorIconStyle}
-          onClick={() => toggleIsNavPanelOpen()}
-        />
-      </abbr>
+        <abbr title='Close This Menu'>
+          <XIcon
+            className={cursorIconStyle}
+            onClick={() => handleIsNavPanelOpen.toggleBooleanState()}
+          />
+        </abbr>
+      </div>
     </div>
   );
 };
