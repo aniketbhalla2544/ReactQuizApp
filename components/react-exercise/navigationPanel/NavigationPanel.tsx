@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import { ExercisesData } from '../types';
 import ExerciseBlocks from './ExerciseBlocks';
-import Icons from './Icons';
+import MemoizedIcons from './Icons';
 
 interface NavPanelProps {
   exercises: ExercisesData;
@@ -19,7 +19,7 @@ const NavigationPanel = ({ exercises }: NavPanelProps) => {
 
   return (
     <div className='fixed left-0 top-0 bottom-0 z-50 max-h-screen min-w-[70vw] bg-neutral-800 shadow-2xl lg:min-w-[20vw]'>
-      <Icons />
+      <MemoizedIcons />
       <section className={`px-5 py-4 ${bgColor}`}>
         <p className='text-center'>
           {hasUserCompletedAllExercises ? (

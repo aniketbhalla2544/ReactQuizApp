@@ -1,10 +1,10 @@
 import { ChevronRightIcon } from '@heroicons/react/solid';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef } from 'react';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
-import QAButton from './QAButton';
 import { SetStateType } from '../types';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { StateBooleanHandler } from '../../../hooks/useBooleanStateController';
+import MemoizedQAButton from './QAButton';
 
 interface QAModelProps {
   isUserTrying: boolean;
@@ -43,10 +43,37 @@ const QAModel = ({
   const isUserAtLastExercise = currentExerciseNumber === totalExercises;
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
-  const onShowAnsClick = () => {
+  const onShowAnsClick = useCallback(() => {
     didUserSeeAnswer.current = true;
     handleCanShowAns.toggleBooleanState();
-  };
+  }, [handleCanShowAns]);
+
+  const onSubmitAnsAndTryAgainClick = useCallback(() => {
+    if (isUserTrying) {
+      handleAnsSubmittion(didUserSeeAnswer.current);
+    } else {
+      // if ans is correct
+      if (isAnswerCorrect) {
+        setCurrentExerciseBlock(
+          (currentExerciseBlock) => currentExerciseBlock + 1
+        );
+        setCurrentExerciseNumber(
+          (currentExerciseNumber) => currentExerciseNumber + 1
+        );
+        setIsAnswerCorrect(false);
+      } else {
+        setIsUserTrying(true);
+      }
+    }
+  }, [
+    handleAnsSubmittion,
+    setCurrentExerciseBlock,
+    setCurrentExerciseNumber,
+    setIsAnswerCorrect,
+    setIsUserTrying,
+    isUserTrying,
+    isAnswerCorrect,
+  ]);
 
   useEffect(() => {
     didUserSeeAnswer.current = false;
@@ -87,55 +114,24 @@ const QAModel = ({
           ) : (
             <>
               {children}
-              <QAButton
+              <MemoizedQAButton
                 color='bg-slate-700'
                 mxAuto='ml-auto'
                 onClick={onShowAnsClick}
               >
                 {canShowAns ? 'hide answer' : 'show answer'}
-              </QAButton>
+              </MemoizedQAButton>
             </>
           )}
         </div>
         {(isUserAtLastExercise && isAnswerCorrect) ||
           (!canShowAns && (
-            <QAButton
+            <MemoizedQAButton
               color='bg-green-600'
               mxAuto='mr-auto'
-              onClick={() => {
-                // if user is trying
-                if (isUserTrying) {
-                  handleAnsSubmittion(didUserSeeAnswer.current);
-                }
-                // if user is not trying
-                else {
-                  // if ans is correct
-                  if (isAnswerCorrect) {
-                    if (isUserAtLastExercise && hasUserCompletedAllExercises) {
-                      // toggleIsResultsModalOpen();
-                    } else if (
-                      isUserAtLastExercise &&
-                      !hasUserCompletedAllExercises
-                    ) {
-                      // toggleIsUserAlertModalOpen();
-                    } else {
-                      setCurrentExerciseBlock(
-                        (currentExerciseBlock) => currentExerciseBlock + 1
-                      );
-                      setCurrentExerciseNumber(
-                        (currentExerciseNumber) => currentExerciseNumber + 1
-                      );
-                      setIsAnswerCorrect(false);
-                    }
-                  }
-                  // if ans is  not correct
-                  else {
-                    setIsUserTrying(true);
-                  }
-                }
-              }}
+              onClick={onSubmitAnsAndTryAgainClick}
             >
-              {isUserTrying && (
+              {isUserTrying ? (
                 <>
                   <span>submit answer</span>
                   <ChevronRightIcon
@@ -144,14 +140,12 @@ const QAModel = ({
                     } m-0 h-auto  p-0`}
                   />
                 </>
+              ) : isAnswerCorrect ? (
+                <span>next exercise &nbsp;</span>
+              ) : (
+                <span>try again &nbsp;</span>
               )}
-              {!isUserTrying &&
-                (isAnswerCorrect ? (
-                  <span>next exercise &nbsp;</span>
-                ) : (
-                  <span>try again &nbsp;</span>
-                ))}
-            </QAButton>
+            </MemoizedQAButton>
           ))}
       </div>
     </section>

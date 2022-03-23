@@ -1,6 +1,6 @@
 import { HomeIcon, RefreshIcon, XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import { useContext } from 'react';
+import { memo, useContext } from 'react';
 import { setShouldTimerBeResetToTrue } from '../../../features/TimerState';
 import { useAppDispatch } from '../../../hooks/reduxHooks';
 import { ReactExerciseCtx } from '../../../pages/react-exercise';
@@ -50,4 +50,6 @@ const Icons = () => {
   );
 };
 
-export default Icons;
+const MemoizedIcons = memo(Icons);
+
+export default MemoizedIcons;

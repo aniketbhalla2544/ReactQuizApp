@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { SetStateType } from '../types';
 
 type QAButtonProps = {
@@ -22,4 +23,6 @@ const QAButton = ({ children, color, mxAuto, onClick }: QAButtonProps) => {
   );
 };
 
-export default QAButton;
+const MemoizedQAButton = memo(QAButton);
+
+export default MemoizedQAButton;

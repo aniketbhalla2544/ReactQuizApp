@@ -53,7 +53,6 @@ const Timer = () => {
     };
   }, [shouldTimerBeReset, appDispatch]);
 
-  // !! timer stops here
   useEffect(() => {
     return () => {
       if (shouldTimerBeStopped && intervalId.current) {

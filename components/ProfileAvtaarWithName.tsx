@@ -1,6 +1,6 @@
 import { createAvatar } from '@dicebear/avatars';
 import Image from 'next/image';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useAppSelector } from '../hooks/reduxHooks';
 import * as style from '@dicebear/avatars-bottts-sprites';
 import useMediaQuery from '../hooks/useMediaQuery';
@@ -33,5 +33,7 @@ const ProfileAvtaarWithName = () => {
     </section>
   );
 };
+
+// const MemoizedProfileAvtaarWithName = memo(ProfileAvtaarWithName);
 
 export default ProfileAvtaarWithName;
