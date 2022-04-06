@@ -4,7 +4,7 @@ import { ReactExerciseCtx } from '../../../pages/react-exercise';
 import { SetStateType } from '../types';
 import useMediaQuery from '../../../hooks/useMediaQuery';
 import { StateBooleanHandler } from '../../../hooks/useBooleanStateController';
-import MemoizedQAButton from './QAButton';
+import QAButton from './QAButton';
 
 interface QAModelProps {
   isUserTrying: boolean;
@@ -34,12 +34,9 @@ const QAModel = ({
     currentExerciseNumber,
     setCurrentExerciseNumber,
     totalExercises,
-    completedExercises,
   } = useContext(ReactExerciseCtx);
 
   const didUserSeeAnswer = useRef(false);
-  const hasUserCompletedAllExercises =
-    Object.keys(completedExercises).length === totalExercises;
   const isUserAtLastExercise = currentExerciseNumber === totalExercises;
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -52,7 +49,6 @@ const QAModel = ({
     if (isUserTrying) {
       handleAnsSubmittion(didUserSeeAnswer.current);
     } else {
-      // if ans is correct
       if (isAnswerCorrect) {
         setCurrentExerciseBlock(
           (currentExerciseBlock) => currentExerciseBlock + 1
@@ -114,19 +110,19 @@ const QAModel = ({
           ) : (
             <>
               {children}
-              <MemoizedQAButton
+              <QAButton
                 color='bg-slate-700'
                 mxAuto='ml-auto'
                 onClick={onShowAnsClick}
               >
                 {canShowAns ? 'hide answer' : 'show answer'}
-              </MemoizedQAButton>
+              </QAButton>
             </>
           )}
         </div>
         {(isUserAtLastExercise && isAnswerCorrect) ||
           (!canShowAns && (
-            <MemoizedQAButton
+            <QAButton
               color='bg-green-600'
               mxAuto='mr-auto'
               onClick={onSubmitAnsAndTryAgainClick}
@@ -145,7 +141,7 @@ const QAModel = ({
               ) : (
                 <span>try again &nbsp;</span>
               )}
-            </MemoizedQAButton>
+            </QAButton>
           ))}
       </div>
     </section>
