@@ -7,7 +7,6 @@ import MemoizedIcons from './Icons';
 interface NavPanelProps {
   exercises: ExercisesData;
 }
-
 const NavigationPanel = ({ exercises }: NavPanelProps) => {
   const { completedExercises, totalExercises } = useContext(ReactExerciseCtx);
   const completedExercisesLength = Object.keys(completedExercises).length;

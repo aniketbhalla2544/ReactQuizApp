@@ -28,6 +28,7 @@ import useMediaQuery from '../hooks/useMediaQuery';
 import useBooleanStateController, {
   StateBooleanHandler,
 } from '../hooks/useBooleanStateController';
+import useClientSide from '../hooks/useClientSide';
 
 type CompletedExercise = {
   exerciseNumber: number;
@@ -71,8 +72,9 @@ const ReactExercisePage = () => {
   const [isUserFormOpen, toggleIsUserFormOpen] = useToggle(true);
   const appDispatch = useAppDispatch();
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
-  const [isNavPanelOpen, handleIsNavPanelOpen] =
-    useBooleanStateController(isLargeScreen);
+  const [isNavPanelOpen, handleIsNavPanelOpen] = useBooleanStateController(
+    isLargeScreen ?? true
+  );
 
   const onUserFormSubmittion = useCallback(
     (userName: string) => {
